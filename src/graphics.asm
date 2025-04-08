@@ -117,7 +117,7 @@ export move_window_offscreen
 
 section "graphics_data", rom0[GRAPHICS_DATA_ADDRESS_START]
 incbin "assets/tileset.chr"
-incbin "assets/fireboy_watergirl_background.tlm"
+incbin "assets/tilemap.tlm"
 incbin "assets/fireboy_watergirl_window.tlm"
 
 ;

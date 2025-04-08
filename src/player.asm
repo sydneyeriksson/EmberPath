@@ -20,6 +20,44 @@ init_player:
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMA_NO_FLAGS
     ret
 
+
+jump:
+    ld a, e
+    cp a, 8
+    jr nc, .down
+        ld a, 17
+        sub a, e
+        srl a
+        srl a
+        srl a
+        ld c, a
+        ; move sprite one pixel up
+        ld a, [PLAYER_SPRITE + OAMA_Y]
+        sub a, c
+        ld [PLAYER_SPRITE + OAMA_Y], a
+        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL0
+
+        inc e
+        jr .done
+    .down
+    srl a
+    srl a
+    srl a
+    ld c, a
+    ; move sprite one pixel down
+    ld a, [PLAYER_SPRITE + OAMA_Y]
+    add a, c
+    ld [PLAYER_SPRITE + OAMA_Y], a
+    Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL0
+    inc e
+    ld a, e
+    cp a, 16
+    jr c, .done
+        ld e, 0
+    .done
+    ret
+
+
 move_player:
     halt
 
@@ -55,28 +93,37 @@ move_player:
     ; Is up being held?
     push af
     bit PADB_UP, a
-    jr nz, .done_moving_up
+    jr nz, .no_start_jump
+        ld a, e
+        cp a, 0
+        jr nz, .no_start_jump
+            ld e, 1
     ; perform action
         ; move right
-        ld a, [PLAYER_SPRITE + OAMA_Y]
-        dec a
-        ld [PLAYER_SPRITE + OAMA_Y], a
-        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL0
-    .done_moving_up
+        ; ld a, [PLAYER_SPRITE + OAMA_Y]
+        ; dec a
+        ; ld [PLAYER_SPRITE + OAMA_Y], a
+        ; Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL0
+    .no_start_jump
+    ld a, e
+    cp a, 0
+    jr z, .no_jump
+        call jump
+    .no_jump
     pop af
 
     ; Is down being held?
-    push af
-    bit PADB_DOWN, a
-    jr nz, .done_moving_down
-    ; perform action
-        ; move right
-        ld a, [PLAYER_SPRITE + OAMA_Y]
-        inc a
-        ld [PLAYER_SPRITE + OAMA_Y], a
-        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL0
-    .done_moving_down
-    pop af
+    ; push af
+    ; bit PADB_DOWN, a
+    ; jr nz, .done_moving_down
+    ; ; perform action
+    ;     ; move right
+    ;     ld a, [PLAYER_SPRITE + OAMA_Y]
+    ;     inc a
+    ;     ld [PLAYER_SPRITE + OAMA_Y], a
+    ;     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL0
+    ; .done_moving_down
+    ; pop af
 
         
     ; Retrieve joypad state by loading the appropriate WRAM variable

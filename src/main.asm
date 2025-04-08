@@ -8,6 +8,7 @@ section "header", rom0[$0100]
 entrypoint:
     di
     jr main
+    ds $150 - @, 0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -28,6 +29,7 @@ main:
     DisableLCD
     call init_player
     EnableLCD
+    ld e, 0
     .game_loop
         halt
         UpdateJoypad
