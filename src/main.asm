@@ -33,6 +33,7 @@ main:
     .game_loop
         halt
         UpdateJoypad
+        call flicker
         call move_player
         jr .game_loop
 

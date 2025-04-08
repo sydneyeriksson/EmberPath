@@ -6,9 +6,10 @@ include "src/wram.inc"
 ; then put in player.inc file
 
 def PLAYER_SPRITE         equ _OAMRAM
+def FIRE_2                equ (_OAMRAM + sizeof_OAM_ATTRS)
 def PLAYER_START_X        equ 83
 def PLAYER_START_Y        equ 60
-def PLAYER_NEUTRAL_TILEID equ 0
+def FIRE_UPRIGHT_TILEID   equ 0
 def OAMA_NO_FLAGS         equ 0
 
 section "fire", rom0
@@ -16,7 +17,7 @@ section "fire", rom0
 init_player:
     Copy [PLAYER_SPRITE + OAMA_X], PLAYER_START_X
     Copy [PLAYER_SPRITE + OAMA_Y], PLAYER_START_Y
-    Copy [PLAYER_SPRITE + OAMA_TILEID], PLAYER_NEUTRAL_TILEID
+    Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_UPRIGHT_TILEID
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMA_NO_FLAGS
     ret
 
@@ -55,6 +56,18 @@ jump:
     jr c, .done
         ld e, 0
     .done
+    ret
+
+flicker:
+    halt
+    ld a, [PLAYER_SPRITE + OAMA_TILEID]
+    inc a
+    cp a, 6
+    jr c, .skip_reset
+        ld a, 0
+    .skip_reset
+    Copy [PLAYER_SPRITE + OAMA_TILEID], a
+
     ret
 
 
@@ -135,4 +148,4 @@ move_player:
 
     ret
 
-export init_player, move_player
+export init_player, move_player, flicker
