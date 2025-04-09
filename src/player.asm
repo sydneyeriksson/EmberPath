@@ -1,18 +1,23 @@
+;
+; CS-240 World 5: First Draft
+;
+; @file player.asm
+; @authors Asher Kaplan and Sydney Eriksson
+; @date April 9, 2025
+
 include "src/utils.inc"
 include "src/wram.inc"
 
-; if only used in this file, then it makes sense 
-; to put player constants here. If used elsewhere (very possible)
-; then put in player.inc file
-
 def PLAYER_SPRITE         equ _OAMRAM
-def FIRE_2                equ (_OAMRAM + sizeof_OAM_ATTRS)
 def PLAYER_START_X        equ 83
 def PLAYER_START_Y        equ 134
 def FIRE_UPRIGHT_TILEID   equ 0
 def FIRE_BALL             equ 24
 def FIRE_MOVING_LEFT      equ 8
 def OAMA_NO_FLAGS         equ 0
+def SPRITE_MOVING_DOWN    equ 8
+def SPRITE_DONE_JUMPING   equ 16
+def END_FLICKER_TILE_ID   equ 6
 
 section "fire", rom0
 
@@ -23,76 +28,89 @@ init_player:
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
     ret
 
-
+; make the sprite jump, returns a counter in "e" 
+;       which stores what part of the jump the sprite is in
 jump:
+    push af
+    push bc
     ld a, e
-    cp a, 8
+    cp a, SPRITE_MOVING_DOWN
     jr nc, .down
         Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
         Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
-        ld a, 17
+
+        ; Calculate how much the sprite should move up based on the counter "e"
+        ld a, SPRITE_DONE_JUMPING
+        inc a
         sub a, e
         srl a
         srl a
         srl a
         ld c, a
-        ; move sprite one pixel up
+
+        ; move sprite up
         ld a, [PLAYER_SPRITE + OAMA_Y]
         sub a, c
         ld [PLAYER_SPRITE + OAMA_Y], a
-        ;Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
-
         inc e
         jr .done
     .down
+    ; Calculate how much the sprite should move down based on the counter "e"
     srl a
     srl a
     srl a
     ld c, a
-    ; move sprite one pixel down
+
+    ; move sprite down
     ld a, [PLAYER_SPRITE + OAMA_Y]
     add a, c
     ld [PLAYER_SPRITE + OAMA_Y], a
     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_YFLIP | OAMF_PAL1
+
+    ; increment the jump counter "e"
     inc e
+
+    ; Check if the sprite is done jumping
     ld a, e
-    cp a, 16
+    cp a, SPRITE_DONE_JUMPING
     jr c, .done
+        ; Reset the flame to be in normal upright mode
         Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_UPRIGHT_TILEID
         Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
         ld e, 0
     .done
+    pop af
+    pop bc
     ret
 
+; makes the flame flicker
 flicker:
+    push af
     halt
     ld a, [PLAYER_SPRITE + OAMA_TILEID]
-    cp a, 6
+    cp a, END_FLICKER_TILE_ID
     jr nc, .done
+        ; change between the flickering tileIDs
         inc a
-        cp a, 6
+        cp a, END_FLICKER_TILE_ID
         jr c, .skip_reset
             ld a, 0
         .skip_reset
         Copy [PLAYER_SPRITE + OAMA_TILEID], a
     .done
+    pop af
     ret
-
 
 move_player:
     halt
-    ; reset the flame
+    ; reset the flame to upright position
     ld a, [PLAYER_SPRITE + OAMA_TILEID]
-    cp a, 8
+    cp a, END_FLICKER_TILE_ID
     jr c, .skip_reset
         Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_UPRIGHT_TILEID
         Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
     .skip_reset
-
-
-    ;Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_UPRIGHT_TILEID
-    ;Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMA_NO_FLAGS
 
     ; get the joypad buttons that are being held!
     ld a, [PAD_CURR]
@@ -101,14 +119,12 @@ move_player:
     push af
     bit PADB_RIGHT, a
     jr nz, .done_moving_right
-    ; perform action
         ; move right
         ld a, [PLAYER_SPRITE + OAMA_X]
         inc a
         ld [PLAYER_SPRITE + OAMA_X], a
         Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
         Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_LEFT
-        ;Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMA_NO_FLAGS
     .done_moving_right
     pop af
 
@@ -116,8 +132,7 @@ move_player:
     push af
     bit PADB_LEFT, a
     jr nz, .done_moving_left
-    ; perform action
-        ; move right
+        ; move left
         ld a, [PLAYER_SPRITE + OAMA_X]
         dec a
         ld [PLAYER_SPRITE + OAMA_X], a
@@ -132,48 +147,22 @@ move_player:
     ; Is up being held?
     push af
     bit PADB_UP, a
+    ; Check if a jump is currently in action
     jr nz, .no_start_jump
         ld a, e
         cp a, 0
         jr nz, .no_start_jump
+            ; set the counter "e" to 1 to signify that a jump is in action
             ld e, 1
-    ; perform action
-        ; move right
-        ; ld a, [PLAYER_SPRITE + OAMA_Y]
-        ; dec a
-        ; ld [PLAYER_SPRITE + OAMA_Y], a
-        ; Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL0
+
     .no_start_jump
+    ; if a jump is in action, call jump to continue the jump
     ld a, e
     cp a, 0
     jr z, .no_jump
         call jump
     .no_jump
     pop af
-
-    ; was right being held?
-
-
-    ; Is down being held?
-    ; push af
-    ; bit PADB_DOWN, a
-    ; jr nz, .done_moving_down
-    ; ; perform action
-    ;     ; move right
-    ;     ld a, [PLAYER_SPRITE + OAMA_Y]
-    ;     inc a
-    ;     ld [PLAYER_SPRITE + OAMA_Y], a
-    ;     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL0
-    ; .done_moving_down
-    ; pop af
-
-        
-    ; Retrieve joypad state by loading the appropriate WRAM variable
-    ; (see wram.inc!)
-
-    ; handle UP / DOWN / LEFT / RIGHT
-
-    ; consider making a helper macro MoveSprite!
 
     ret
 
