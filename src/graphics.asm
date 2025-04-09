@@ -67,7 +67,7 @@ init_graphics:
     ld a, %11100100
     ld [rBGP], a
     ld [rOBP0], a
-    ld a, %00011011
+    ld a, %10010011
     ld [rOBP1], a
 
     ; init graphics data
@@ -116,9 +116,9 @@ export move_window_offscreen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 section "graphics_data", rom0[GRAPHICS_DATA_ADDRESS_START]
-incbin "assets/tileset.chr"
-incbin "assets/tilemap.tlm"
-incbin "assets/fireboy_watergirl_window.tlm"
+incbin "assets/tileset_yay.chr"
+incbin "assets/tilemap_complete.tlm"
+incbin "assets/window1.tlm"
 
 ;
 ; CS-240 World 4: Moving window and assets

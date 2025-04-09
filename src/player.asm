@@ -8,8 +8,10 @@ include "src/wram.inc"
 def PLAYER_SPRITE         equ _OAMRAM
 def FIRE_2                equ (_OAMRAM + sizeof_OAM_ATTRS)
 def PLAYER_START_X        equ 83
-def PLAYER_START_Y        equ 60
+def PLAYER_START_Y        equ 134
 def FIRE_UPRIGHT_TILEID   equ 0
+def FIRE_BALL             equ 24
+def FIRE_MOVING_LEFT      equ 8
 def OAMA_NO_FLAGS         equ 0
 
 section "fire", rom0
@@ -18,7 +20,7 @@ init_player:
     Copy [PLAYER_SPRITE + OAMA_X], PLAYER_START_X
     Copy [PLAYER_SPRITE + OAMA_Y], PLAYER_START_Y
     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_UPRIGHT_TILEID
-    Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMA_NO_FLAGS
+    Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
     ret
 
 
@@ -26,6 +28,8 @@ jump:
     ld a, e
     cp a, 8
     jr nc, .down
+        Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
+        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
         ld a, 17
         sub a, e
         srl a
@@ -36,7 +40,7 @@ jump:
         ld a, [PLAYER_SPRITE + OAMA_Y]
         sub a, c
         ld [PLAYER_SPRITE + OAMA_Y], a
-        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL0
+        ;Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
 
         inc e
         jr .done
@@ -49,11 +53,14 @@ jump:
     ld a, [PLAYER_SPRITE + OAMA_Y]
     add a, c
     ld [PLAYER_SPRITE + OAMA_Y], a
-    Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL0
+    Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
+    Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_YFLIP | OAMF_PAL1
     inc e
     ld a, e
     cp a, 16
     jr c, .done
+        Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_UPRIGHT_TILEID
+        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
         ld e, 0
     .done
     ret
@@ -61,18 +68,31 @@ jump:
 flicker:
     halt
     ld a, [PLAYER_SPRITE + OAMA_TILEID]
-    inc a
     cp a, 6
-    jr c, .skip_reset
-        ld a, 0
-    .skip_reset
-    Copy [PLAYER_SPRITE + OAMA_TILEID], a
-
+    jr nc, .done
+        inc a
+        cp a, 6
+        jr c, .skip_reset
+            ld a, 0
+        .skip_reset
+        Copy [PLAYER_SPRITE + OAMA_TILEID], a
+    .done
     ret
 
 
 move_player:
     halt
+    ; reset the flame
+    ld a, [PLAYER_SPRITE + OAMA_TILEID]
+    cp a, 8
+    jr c, .skip_reset
+        Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_UPRIGHT_TILEID
+        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
+    .skip_reset
+
+
+    ;Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_UPRIGHT_TILEID
+    ;Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMA_NO_FLAGS
 
     ; get the joypad buttons that are being held!
     ld a, [PAD_CURR]
@@ -86,7 +106,9 @@ move_player:
         ld a, [PLAYER_SPRITE + OAMA_X]
         inc a
         ld [PLAYER_SPRITE + OAMA_X], a
-        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL0
+        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
+        Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_LEFT
+        ;Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMA_NO_FLAGS
     .done_moving_right
     pop af
 
@@ -99,7 +121,11 @@ move_player:
         ld a, [PLAYER_SPRITE + OAMA_X]
         dec a
         ld [PLAYER_SPRITE + OAMA_X], a
-        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL0
+
+        ; reset the flame
+        ld a, [PLAYER_SPRITE + OAMA_TILEID]
+        Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_LEFT
+        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_XFLIP | OAMF_PAL1
     .done_moving_left
     pop af
 
@@ -124,6 +150,9 @@ move_player:
         call jump
     .no_jump
     pop af
+
+    ; was right being held?
+
 
     ; Is down being held?
     ; push af
