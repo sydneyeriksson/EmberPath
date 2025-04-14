@@ -22,6 +22,7 @@ entrypoint:
 section "main", rom0[$0155]
 main:
     DisableLCD
+    call load_collision_tiles_into_ROM
     call init_graphics
     EnableLCD
     InitJoypad
@@ -39,6 +40,7 @@ main:
     DisableLCD
     call init_player
     call init_door
+    call init_torch_1
     EnableLCD
     ld e, 0
     ld d, 0

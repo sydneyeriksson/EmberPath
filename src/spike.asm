@@ -1,24 +1,35 @@
 ;
 ; CS-240 World 5: First Draft
 ;
-; @file door.asm
+; @file spike.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 9, 2025
+; @date April 13, 2025
 
 include "src/utils.inc"
 include "src/wram.inc"
 
 
-def LEFT_DOOR           equ _OAMRAM + sizeof_OAM_ATTRS
+def SPIKE_1          equ _OAMRAM + 3*sizeof_OAM_ATTRS
+def SPIKE_2          equ _OAMRAM + 4*sizeof_OAM_ATTRS
+def SPIKE_3          equ _OAMRAM + 5*sizeof_OAM_ATTRS
+def SPIKE_4          equ _OAMRAM + 6*sizeof_OAM_ATTRS
+def SPIKE_5          equ _OAMRAM + 7*sizeof_OAM_ATTRS
+def SPIKE_6          equ _OAMRAM + 8*sizeof_OAM_ATTRS
+def SPIKE_7          equ _OAMRAM + 9*sizeof_OAM_ATTRS
+def SPIKE_8          equ _OAMRAM + 10*sizeof_OAM_ATTRS
+def SPIKE_9          equ _OAMRAM + 11*sizeof_OAM_ATTRS
+
 def LEFT_DOOR_START_X   equ 20
 def LEFT_DOOR_START_Y   equ 112
 def LEFT_DOOR_TILE_ID   equ 42
 def OAMA_NO_FLAGS       equ 0
 
-def RIGHT_DOOR          equ _OAMRAM + 2*sizeof_OAM_ATTRS
+
 def RIGHT_DOOR_START_X  equ 28
 def RIGHT_DOOR_START_Y  equ 112
 def RIGHT_DOOR_TILE_ID  equ 44
+
+def PLAYER_SPRITE       equ _OAMRAM
 
 def OPEN_OR_CLOSE_DOOR  equ 20
 def OPEN_DOOR_TILE_IDS  equ 46

@@ -7,8 +7,8 @@
 
 include "src/utils.inc"
 include "src/wram.inc"
+include "src/sprites.inc"
 
-def PLAYER_SPRITE         equ _OAMRAM
 def PLAYER_START_X        equ 83
 def PLAYER_START_Y        equ 134
 def FIRE_UPRIGHT_TILEID   equ 0
@@ -20,6 +20,44 @@ def SPRITE_DONE_JUMPING   equ 16
 def END_FLICKER_TILE_ID   equ 6
 
 section "fire", rom0
+
+macro move_right
+    ld a, [PLAYER_SPRITE + OAMA_X]
+    inc a
+    ld [PLAYER_SPRITE + OAMA_X], a
+    Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
+    Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_LEFT
+    ; Checks if player can move there, undoes movement if not
+    Copy b, [PLAYER_SPRITE + OAMA_X]
+    Copy c, [PLAYER_SPRITE + OAMA_Y]
+    call can_player_move_here
+    jr z, .done\@
+        ld a, [PLAYER_SPRITE + OAMA_X]
+        dec a
+        ld [PLAYER_SPRITE + OAMA_X], a
+        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
+    .done\@
+endm
+
+macro move_left
+    ld a, [PLAYER_SPRITE + OAMA_X]
+    dec a
+    ld [PLAYER_SPRITE + OAMA_X], a
+    Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_XFLIP | OAMF_PAL1
+    Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_LEFT
+    ; Checks if player can move there, undoes movement if not
+    Copy b, [PLAYER_SPRITE + OAMA_X]
+    ld a, b
+    sub a, 8
+    ld b, a
+    Copy c, [PLAYER_SPRITE + OAMA_Y]
+    call can_player_move_here
+    jr z, .done\@
+        ld a, [PLAYER_SPRITE + OAMA_X]
+        inc a
+        ld [PLAYER_SPRITE + OAMA_X], a
+    .done\@
+endm
 
 init_player:
     Copy [PLAYER_SPRITE + OAMA_X], PLAYER_START_X
@@ -120,11 +158,7 @@ move_player:
     bit PADB_RIGHT, a
     jr nz, .done_moving_right
         ; move right
-        ld a, [PLAYER_SPRITE + OAMA_X]
-        inc a
-        ld [PLAYER_SPRITE + OAMA_X], a
-        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
-        Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_LEFT
+        move_right
     .done_moving_right
     pop af
 
@@ -133,14 +167,15 @@ move_player:
     bit PADB_LEFT, a
     jr nz, .done_moving_left
         ; move left
-        ld a, [PLAYER_SPRITE + OAMA_X]
-        dec a
-        ld [PLAYER_SPRITE + OAMA_X], a
+        ; ld a, [PLAYER_SPRITE + OAMA_X]
+        ; dec a
+        ; ld [PLAYER_SPRITE + OAMA_X], a
 
-        ; reset the flame
-        ld a, [PLAYER_SPRITE + OAMA_TILEID]
-        Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_LEFT
-        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_XFLIP | OAMF_PAL1
+        ; ; reset the flame
+        ; ld a, [PLAYER_SPRITE + OAMA_TILEID]
+        ; Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_LEFT
+        ; Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_XFLIP | OAMF_PAL1
+        move_left
     .done_moving_left
     pop af
 
