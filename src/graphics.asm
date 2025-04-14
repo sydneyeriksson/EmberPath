@@ -120,6 +120,6 @@ export move_window_offscreen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 section "graphics_data", rom0[GRAPHICS_DATA_ADDRESS_START]
-incbin "assets/tileset.chr"
-incbin "assets/tilemap.tlm"
+incbin "assets/tileset_empty_torch.chr"
+incbin "assets/tilemap_level_1.tlm"
 incbin "assets/window.tlm"

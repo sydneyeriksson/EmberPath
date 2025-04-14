@@ -9,7 +9,7 @@ section "collision", rom0
 ; b is sprite x_coordinate 
 ; c is sprite y_coordinate
 ; returns global x coordinate in b, y coordinate in c
-macro global_coordinates
+global_coordinates:
     ; Find global x coordinate
     ; Copy a, [\1 + OAMA_X]
     ; ld b, a
@@ -25,7 +25,7 @@ macro global_coordinates
     add a, c
     sub a, 16
     ld c, a
-endm
+    ret
 
 ; make macro to check if tile next to sprite is collision
     ; if moving right:
@@ -93,6 +93,7 @@ endm
 ; returns z flag checked if no collision, nz checked if collision
 macro CHECK_IF_COLLISION
     ; put the index we want to check in ROM into hl
+    ;$D000
     ld hl, $D000
     ld a, \1
     ld b, a
@@ -125,73 +126,74 @@ macro CHECK_IF_COLLISION
     and a, [hl]
 endm
 
+; checks if sprite is infront of ladder
+; returns z flag checked if it is, nz checked if not
+infront_of_ladder:
+    call global_coordinates
+    find_overlapping_tile_ID b, c
+    cp a, 188
+    ret
+
 ; sets the zero flag if the player can go there, zero flag not set if collision
 can_player_move_here:
-    global_coordinates PLAYER_SPRITE
+    call global_coordinates
     find_overlapping_tile_ID b, c
     CHECK_IF_COLLISION a
     ret
 
-load_collision_tiles_into_ROM:
-    ld hl, $D000
-    ; sprites do not cause collisions
-    ld a, %00000000
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ld[hl], a
-    inc hl
-    ; background blocks that may cause collisions
-    ld a, %11100001
-    ld[hli], a
-    ld a, %11000000
-    ld[hli], a
-    ld a, %10100001
-    ld[hli], a
-    ld a, %01000000
-    ld[hli], a
-    ld a, %11100001
-    ld[hli], a
-    ld a, %11000000
-    ld[hli], a
-    ld a, %11000000
-    ld[hli], a
-    ld a, %00000111
-    ld[hli], a
-    ld a, %00000000
-    ld[hli], a
-    ld a, %00000000
-    ld[hli], a
-    ld a, %00000000
-    ld[hli], a
+section "collision tiles", rom0
 
-    ret
+; sprites do not cause collisions
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %11100001
+db %11000000
+db %10100001
+db %01000000
+db %11100001
+db %11000000
+db %11001111
+db %10000111
+db %00000000
+db %00000000
+db %00000000
 
-export can_player_move_here, load_collision_tiles_into_ROM
+; background blocks that may cause collisions
+; ld a, %11100001
+; ld[hli], a
+; ld a, %11000000
+; ld[hli], a
+; ld a, %10100001
+; ld[hli], a
+; ld a, %01000000
+; ld[hli], a
+; ld a, %11100001
+; ld[hli], a
+; ld a, %11000000
+; ld[hli], a
+; ld a, %11001111
+; ld[hli], a
+; ld a, %10000111
+; ld[hli], a
+; ld a, %00000000
+; ld[hli], a
+; ld a, %00000000
+; ld[hli], a
+; ld a, %00000000
+; ld[hli], a
+
+export can_player_move_here, load_collision_tiles_into_ROM, infront_of_ladder, global_coordinates

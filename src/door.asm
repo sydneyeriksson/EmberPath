@@ -10,14 +10,14 @@ include "src/wram.inc"
 
 
 def LEFT_DOOR           equ _OAMRAM + sizeof_OAM_ATTRS
-def LEFT_DOOR_START_X   equ 20
-def LEFT_DOOR_START_Y   equ 112
+def LEFT_DOOR_START_X   equ 16
+def LEFT_DOOR_START_Y   equ 16
 def LEFT_DOOR_TILE_ID   equ 42
 def OAMA_NO_FLAGS       equ 0
 
 def RIGHT_DOOR          equ _OAMRAM + 2*sizeof_OAM_ATTRS
-def RIGHT_DOOR_START_X  equ 28
-def RIGHT_DOOR_START_Y  equ 112
+def RIGHT_DOOR_START_X  equ 24
+def RIGHT_DOOR_START_Y  equ 16
 def RIGHT_DOOR_TILE_ID  equ 44
 
 def OPEN_OR_CLOSE_DOOR  equ 20
@@ -62,16 +62,9 @@ endm
 open_and_close_door:
     push af
     halt
-    ld a, d
-    cp a, OPEN_OR_CLOSE_DOOR
-    jr c, .skip_change_door
-        ChangeDoor LEFT_DOOR
-        ChangeDoor RIGHT_DOOR
-        ld d, 0
-        jr .done
-    .skip_change_door
-    inc d
-    .done
+    ChangeDoor LEFT_DOOR
+    ChangeDoor RIGHT_DOOR
+    
     pop af
     ret
 

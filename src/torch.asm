@@ -7,89 +7,223 @@
 
 include "src/utils.inc"
 include "src/wram.inc"
+include "src/sprites.inc"
 
+def UNLIT_TORCH_TILE_ID   equ 50
 
+; level 1 torches:
 def TORCH_1          equ _OAMRAM + 3*sizeof_OAM_ATTRS
-def TORCH_1_START_X   equ 41
-def TORCH_1_START_Y   equ 108
-def TORCH_1_TILE_ID   equ 50
+def TORCH_1_START_X   equ 112
+def TORCH_1_START_Y   equ 40
 
-/* def TORCH_2          equ _OAMRAM + 4*sizeof_OAM_ATTRS
-def TORCH_1_START_X   equ 33
-def TORCH_1_START_Y   equ 96
-def TORCH_1_TILE_ID   equ 50
+def TORCH_2          equ _OAMRAM + 4*sizeof_OAM_ATTRS
+def TORCH_2_START_X   equ 152
+def TORCH_2_START_Y   equ 72
 
 def TORCH_3          equ _OAMRAM + 5*sizeof_OAM_ATTRS
-def TORCH_1_START_X   equ 33
-def TORCH_1_START_Y   equ 96
-def TORCH_1_TILE_ID   equ 50
+def TORCH_3_START_X   equ 16
+def TORCH_3_START_Y   equ 88
 
 def TORCH_4          equ _OAMRAM + 6*sizeof_OAM_ATTRS
-def TORCH_1_START_X   equ 33
-def TORCH_1_START_Y   equ 96
-def TORCH_1_TILE_ID   equ 50
+def TORCH_4_START_X   equ 152
+def TORCH_4_START_Y   equ 112
 
-def TORCH_5          equ _OAMRAM + 7*sizeof_OAM_ATTRS
-def TORCH_1_START_X   equ 33
-def TORCH_1_START_Y   equ 96
-def TORCH_1_TILE_ID   equ 50 */
+; level 2 torches:
+def TORCH_1_START_X_L2   equ 152
+def TORCH_1_START_Y_L2   equ 56
 
+def TORCH_2_START_X_L2   equ 64
+def TORCH_2_START_Y_L2   equ 96
+
+def TORCH_3_START_X_L2   equ 16
+def TORCH_3_START_Y_L2   equ 136
+
+def TORCH_4_START_X_L2   equ 152
+def TORCH_4_START_Y_L2   equ 120
 
 def OAMA_NO_FLAGS       equ 0
 
-/* def OPEN_OR_CLOSE_DOOR  equ 20
-def OPEN_DOOR_TILE_IDS  equ 46
-def SWITCH_DOOR_TILE_ID equ 4 */
-
 section "torch", rom0
 
-init_torch_1:
-    ; Init left side of door
-    Copy [TORCH_1 + OAMA_X], TORCH_1_START_X
-    Copy [TORCH_1 + OAMA_Y], TORCH_1_START_Y
-    Copy [TORCH_1 + OAMA_TILEID], TORCH_1_TILE_ID
-    Copy [TORCH_1 + OAMA_FLAGS], OAMF_PAL1
+; make macro to check if sprites are colliding 
+; \1 is global x_coordinate for the first sprite
+; \2 is global y_coordinate for the first sprite
+; \3 is global x_coordinate for the second sprite
+; \4 is global y_coordinate for the second sprite
+; if colliding, set carry flag
+macro find_overlapping_sprite
+    ; calculate what sprite the player_sprite is on
 
-    ; Init right side of door
-/*     Copy [RIGHT_DOOR + OAMA_X], RIGHT_DOOR_START_X
-    Copy [RIGHT_DOOR + OAMA_Y], RIGHT_DOOR_START_Y
-    Copy [RIGHT_DOOR + OAMA_TILEID], RIGHT_DOOR_TILE_ID
-    Copy [RIGHT_DOOR + OAMA_FLAGS], OAMF_PAL1 */
+    ; find y vertical row (divide y pixel height by 8)
+    ld a, \2
+    srl a
+    srl a
+    srl a
+    ld h, a
+
+    ld a, \4
+    srl a
+    srl a
+    srl a
+
+    cp a, h
+    jr nz, .not_overlapping
+
+    ; find x horizontal col (divide y pixel height by 8)
+    ld a, \1
+    srl a
+    srl a
+    srl a
+    ld c, a
+
+    ld a, \3
+    srl a
+    srl a
+    srl a
+    
+    cp a, c
+    jr nz, .not_overlapping
+        scf
+    .not_overlapping
+endm
+
+macro init_torch
+    Copy [\1 + OAMA_X], \2
+    Copy [\1 + OAMA_Y], \3
+    Copy [\1 + OAMA_TILEID], \4
+    Copy [\1 + OAMA_FLAGS], OAMF_PAL1
+endm
+
+; adds a number (\1) to hl
+; returns sum in hl
+macro add_to_hl
+    ld a, l
+    add a, \1
+    ld l, a
+    ld a, h
+    adc a, 0
+    ld h, a
+endm
+
+; nc checked if torch lit
+; c checked if torch not lit
+macro check_torch_lit
+    ; check if tile id is greater than 52 (torch is lit)
+    Copy a, [\1 + OAMA_TILEID]
+    cp a, [UNLIT_TORCH_TILE_ID + 2]
+endm
+
+init_level_1_torches:
+    init_torch TORCH_1, TORCH_1_START_X, TORCH_1_START_Y, UNLIT_TORCH_TILE_ID
+    init_torch TORCH_2, TORCH_2_START_X, TORCH_2_START_Y, UNLIT_TORCH_TILE_ID
+    init_torch TORCH_3, TORCH_3_START_X, TORCH_3_START_Y, UNLIT_TORCH_TILE_ID
+    init_torch TORCH_4, TORCH_4_START_X, TORCH_4_START_Y, UNLIT_TORCH_TILE_ID
     ret
 
-/* ; Switch the state of one half of the door (open or closed)
-macro ChangeDoor
-    push af
-    ld a, [\1 + OAMA_TILEID]
-    cp a, OPEN_DOOR_TILE_IDS
-    jr nc, .set_closed\@
-        add a, SWITCH_DOOR_TILE_ID
-        Copy [\1 + OAMA_TILEID], a
-        jr .done\@
-    .set_closed\@
-    sub a, SWITCH_DOOR_TILE_ID
-    Copy [\1 + OAMA_TILEID], a
-    jr .done\@
-    .done\@
-    pop af
-endm */
+;init_level_2_torches:
+init_level_2_torches:
+    init_torch TORCH_1, TORCH_1_START_X_L2, TORCH_1_START_Y_L2, UNLIT_TORCH_TILE_ID
+    init_torch TORCH_2, TORCH_2_START_X_L2, TORCH_2_START_Y_L2, UNLIT_TORCH_TILE_ID
+    init_torch TORCH_3, TORCH_3_START_X_L2, TORCH_3_START_Y_L2, UNLIT_TORCH_TILE_ID
+    init_torch TORCH_4, TORCH_4_START_X_L2, TORCH_4_START_Y_L2, UNLIT_TORCH_TILE_ID
+    ret
+   
+; check all torches (sprites after the doors but before the water?)
+; return whichever torch is overlapping
+light_possible:
+    ; while the sprite in question is between (_OAMRAM + 3*sizeof_OAM_ATTRS) and (_OAMRAM + 6*sizeof_OAM_ATTRS);;;;tile ID is 50
+        ; compare the sprite locations
+        ; if the same, break and return that torch 
+        ; if get to the end and none, return 0
+    ld hl, TORCH_1
+    .check_next_torch
+    jr c, .touching
+        ; go to next torch
+        add_to_hl sizeof_OAM_ATTRS
+        ; ld a, sizeof_OAM_ATTRS
+        ; add a, l
+        ; ld l, a
+        ; ld a, h
+        ; adc a, 0
+        ; ld h, a
 
-; opens and closes the door, returns a counter in "d" 
-;       which signifies when to open and close the door
-/* open_and_close_door:
-    push af
+        push bc
+        push de
+
+        Copy b, [PLAYER_SPRITE + OAMA_X]
+        Copy c, [PLAYER_SPRITE + OAMA_Y]
+        
+        push hl
+        add_to_hl OAMA_X
+        ld d, [hl]
+        pop hl
+        push hl
+        add_to_hl OAMA_Y
+        ld e, [hl]
+        pop hl
+        find_overlapping_sprite b, c, d, e
+
+        pop de
+        pop bc
+
+        jr c, .touching
+            inc c
+            ld a, c
+            cp a, 4
+            jr nz, .check_next_torch
+                ld h, 0
+                ld l, 0
+    .touching
+    ret
+    
+light_torch:
     halt
-    ld a, d
-    cp a, OPEN_OR_CLOSE_DOOR
-    jr c, .skip_change_door
-        ChangeDoor LEFT_DOOR
-        ChangeDoor RIGHT_DOOR
-        ld d, 0
-        jr .done
-    .skip_change_door
-    inc d
-    .done
+    ; get the joypad buttons that are being held!
+    ld a, [PAD_CURR]
+
+    ; Is B being held?
+    push af
+    bit PADB_DOWN, a
+    jr nz, .dont_light
+        call light_possible
+        inc hl
+        dec hl
+        jr z, .dont_light
+            add_to_hl OAMA_TILEID
+            Copy [hl], 52
+
+
+    .dont_light
     pop af
+
     ret
-*/
-export init_torch_1
+
+; opens door if all torches lit
+check_all_torches_lit:
+    push hl
+    push bc
+    ld c, 0
+    ld hl, TORCH_1
+    .check_next_torch
+    jr c, .done
+        ; go to next torch
+        ld a, sizeof_OAM_ATTRS
+        add a, l
+        ld l, a
+        ld a, h
+        adc a, 0
+        ld h, a
+
+        ; check if all torches have been checked
+        inc c
+        ld a, c
+        cp a, 4
+        jr nz, .check_next_torch
+    call open_and_close_door
+    .done
+    ret
+    pop bc
+    pop hl
+    
+
+export init_level_1_torches, light_torch
