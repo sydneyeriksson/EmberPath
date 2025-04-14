@@ -9,8 +9,8 @@ include "src/utils.inc"
 include "src/wram.inc"
 include "src/sprites.inc"
 
-def PLAYER_START_X        equ 83
-def PLAYER_START_Y        equ 134
+def PLAYER_START_X        equ 30
+def PLAYER_START_Y        equ 110
 def FIRE_UPRIGHT_TILEID   equ 0
 def FIRE_BALL             equ 24
 def FIRE_MOVING_LEFT      equ 8
@@ -59,6 +59,23 @@ macro move_left
     .done\@
 endm
 
+macro gravity
+    ld a, [PLAYER_SPRITE + OAMA_Y]
+    inc a
+    ld [PLAYER_SPRITE + OAMA_Y], a
+    ; Checks if player can move there, undoes movement if not
+    Copy a, [PLAYER_SPRITE + OAMA_Y]
+    add a, 8
+    ld c, a
+    Copy b, [PLAYER_SPRITE + OAMA_X]
+    call can_player_move_here
+    jr z, .done\@
+        ld a, [PLAYER_SPRITE + OAMA_Y]
+        dec a
+        ld [PLAYER_SPRITE + OAMA_Y], a
+    .done\@
+endm
+
 init_player:
     Copy [PLAYER_SPRITE + OAMA_X], PLAYER_START_X
     Copy [PLAYER_SPRITE + OAMA_Y], PLAYER_START_Y
@@ -78,31 +95,32 @@ jump:
         Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
 
         ; Calculate how much the sprite should move up based on the counter "e"
-        ld a, SPRITE_DONE_JUMPING
-        inc a
-        sub a, e
-        srl a
-        srl a
-        srl a
-        ld c, a
+        ; ld a, SPRITE_DONE_JUMPING
+        ; inc a
+        ; sub a, e
+        ; srl a
+        ; srl a
+        ; srl a
+        ; ld c, a
 
         ; move sprite up
         ld a, [PLAYER_SPRITE + OAMA_Y]
-        sub a, c
+        dec a
+        dec a
         ld [PLAYER_SPRITE + OAMA_Y], a
         inc e
         jr .done
     .down
     ; Calculate how much the sprite should move down based on the counter "e"
-    srl a
-    srl a
-    srl a
-    ld c, a
+    ; srl a
+    ; srl a
+    ; srl a
+    ; ld c, a
 
     ; move sprite down
-    ld a, [PLAYER_SPRITE + OAMA_Y]
-    add a, c
-    ld [PLAYER_SPRITE + OAMA_Y], a
+    ; ld a, [PLAYER_SPRITE + OAMA_Y]
+    ; add a, c
+    ; ld [PLAYER_SPRITE + OAMA_Y], a
     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_YFLIP | OAMF_PAL1
 
@@ -198,6 +216,8 @@ move_player:
         call jump
     .no_jump
     pop af
+
+    gravity
 
     ret
 

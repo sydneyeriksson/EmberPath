@@ -65,7 +65,7 @@ macro find_overlapping_tile_ID
     ; * 16
     sla a
     sla l
-    adc a
+    adc a, 0
     ; * 32
     ld h, a
 
@@ -113,11 +113,15 @@ macro CHECK_IF_COLLISION
 
     ; check if the tile index bit is a collision (is 1)
     ld a, %10000000
-    next_bit\@:
+    inc b
+    dec b
+    jr z, .check_bit\@
+    .next_bit\@
         srl a
         dec b
-    jr nz, next_bit\@
+    jr nz, .next_bit\@
 
+    .check_bit\@
     and a, [hl]
 endm
 
