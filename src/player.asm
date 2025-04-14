@@ -65,15 +65,18 @@ macro gravity
     ld [PLAYER_SPRITE + OAMA_Y], a
     ; Checks if player can move there, undoes movement if not
     Copy a, [PLAYER_SPRITE + OAMA_Y]
-    add a, 8
+    add a, 10
     ld c, a
     Copy b, [PLAYER_SPRITE + OAMA_X]
+    ld a, b
+    sub a, 4
+    ld b, a
     call can_player_move_here
-    jr z, .done\@
+    jr z, .done_first_check\@
         ld a, [PLAYER_SPRITE + OAMA_Y]
         dec a
         ld [PLAYER_SPRITE + OAMA_Y], a
-    .done\@
+    .done_first_check\@
 endm
 
 init_player:
