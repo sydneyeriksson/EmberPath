@@ -7,15 +7,14 @@
 
 include "src/utils.inc"
 include "src/wram.inc"
+include "src/sprites.inc"
 
 
-def LEFT_DOOR           equ _OAMRAM + sizeof_OAM_ATTRS
 def LEFT_DOOR_START_X   equ 16
 def LEFT_DOOR_START_Y   equ 16
 def LEFT_DOOR_TILE_ID   equ 42
 def OAMA_NO_FLAGS       equ 0
 
-def RIGHT_DOOR          equ _OAMRAM + 2*sizeof_OAM_ATTRS
 def RIGHT_DOOR_START_X  equ 24
 def RIGHT_DOOR_START_Y  equ 16
 def RIGHT_DOOR_TILE_ID  equ 44
@@ -64,7 +63,7 @@ open_and_close_door:
     halt
     ChangeDoor LEFT_DOOR
     ChangeDoor RIGHT_DOOR
-    
+
     pop af
     ret
 

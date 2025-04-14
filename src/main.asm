@@ -49,6 +49,7 @@ main:
         UpdateJoypad
         call flicker
         call move_player
-        ;call light_torch
+        call light_torch
+        call check_all_torches_lit
         ;call open_and_close_door
         jr .game_loop

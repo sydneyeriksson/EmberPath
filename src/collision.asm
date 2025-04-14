@@ -94,7 +94,7 @@ endm
 macro CHECK_IF_COLLISION
     ; put the index we want to check in ROM into hl
     ;$D000
-    ld hl, $D000
+    ld hl, $0000
     ld a, \1
     ld b, a
     srl a

@@ -67,7 +67,7 @@ macro find_overlapping_sprite
     srl a
 
     cp a, h
-    jr nz, .not_overlapping
+    jr nz, .not_overlapping\@
 
     ; find x horizontal col (divide y pixel height by 8)
     ld a, \1
@@ -82,9 +82,9 @@ macro find_overlapping_sprite
     srl a
     
     cp a, c
-    jr nz, .not_overlapping
+    jr nz, .not_overlapping\@
         scf
-    .not_overlapping
+    .not_overlapping\@
 endm
 
 macro init_torch
@@ -131,49 +131,84 @@ init_level_2_torches:
 ; check all torches (sprites after the doors but before the water?)
 ; return whichever torch is overlapping
 light_possible:
+
+    ld a, [PLAYER_SPRITE + OAMA_X]
+    ld b, a
+    ld a, [PLAYER_SPRITE + OAMA_Y]
+    ld c, a
+
+    Copy d, [TORCH_1 + OAMA_X]
+    Copy e, [TORCH_1 + OAMA_Y]
+    find_overlapping_sprite b, c, d, e
+    jp c, .torch_2
+        ld hl, TORCH_1
+        jp .done
+
+    .torch_2
+    Copy d, [TORCH_2 + OAMA_X]
+    Copy e, [TORCH_2 + OAMA_Y]
+    find_overlapping_sprite b, c, d, e
+    jp c, .torch_3
+        ld hl, TORCH_2
+        jp .done
+
+    .torch_3
+    Copy d, [TORCH_3 + OAMA_X]
+    Copy e, [TORCH_3 + OAMA_Y]
+    find_overlapping_sprite b, c, d, e
+    jp c, .torch_4
+        ld hl, TORCH_3
+        jp .done
+
+    .torch_4
+    Copy d, [TORCH_4 + OAMA_X]
+    Copy e, [TORCH_4 + OAMA_Y]
+    find_overlapping_sprite b, c, d, e
+    jr c, .done
+        ld hl, TORCH_4
+
+    .done
+
     ; while the sprite in question is between (_OAMRAM + 3*sizeof_OAM_ATTRS) and (_OAMRAM + 6*sizeof_OAM_ATTRS);;;;tile ID is 50
         ; compare the sprite locations
         ; if the same, break and return that torch 
         ; if get to the end and none, return 0
-    ld hl, TORCH_1
-    .check_next_torch
-    jr c, .touching
-        ; go to next torch
-        add_to_hl sizeof_OAM_ATTRS
-        ; ld a, sizeof_OAM_ATTRS
-        ; add a, l
-        ; ld l, a
-        ; ld a, h
-        ; adc a, 0
-        ; ld h, a
+    ; ld hl, RIGHT_DOOR
+    ; ; reset the carry
+    ; xor a
+    ; .check_next_torch
+    ; jr c, .touching
+    ;     ; go to next torch
+    ;     add_to_hl sizeof_OAM_ATTRS
 
-        push bc
-        push de
+    ;     push bc
+    ;     push de
 
-        Copy b, [PLAYER_SPRITE + OAMA_X]
-        Copy c, [PLAYER_SPRITE + OAMA_Y]
+    ;     Copy b, [PLAYER_SPRITE + OAMA_X]
+    ;     Copy c, [PLAYER_SPRITE + OAMA_Y]
         
-        push hl
-        add_to_hl OAMA_X
-        ld d, [hl]
-        pop hl
-        push hl
-        add_to_hl OAMA_Y
-        ld e, [hl]
-        pop hl
-        find_overlapping_sprite b, c, d, e
+    ;     push hl
+    ;     add_to_hl OAMA_X
+    ;     ld d, [hl]
+    ;     pop hl
+    ;     push hl
+    ;     add_to_hl OAMA_Y
+    ;     ld e, [hl]
+    ;     pop hl
+    ;     find_overlapping_sprite b, c, d, e
 
-        pop de
-        pop bc
+    ;     pop de
+    ;     pop bc
 
-        jr c, .touching
-            inc c
-            ld a, c
-            cp a, 4
-            jr nz, .check_next_torch
-                ld h, 0
-                ld l, 0
-    .touching
+    ;     jr c, .touching
+    ;         inc c
+    ;         ld a, c
+    ;         cp a, 4
+    ;         jr nz, .check_next_torch
+    ;             ld h, 0
+    ;             ld l, 0
+    ; .touching
+
     ret
     
 light_torch:
@@ -200,10 +235,13 @@ light_torch:
 
 ; opens door if all torches lit
 check_all_torches_lit:
+    halt
     push hl
     push bc
     ld c, 0
     ld hl, TORCH_1
+    ;reset carry
+    xor a
     .check_next_torch
     jr c, .done
         ; go to next torch
@@ -221,9 +259,9 @@ check_all_torches_lit:
         jr nz, .check_next_torch
     call open_and_close_door
     .done
-    ret
     pop bc
     pop hl
+    ret
     
 
-export init_level_1_torches, light_torch
+export init_level_1_torches, light_torch, check_all_torches_lit
