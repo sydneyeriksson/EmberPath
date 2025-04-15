@@ -77,6 +77,8 @@ open_and_close_door:
     ret
 
 enter_door_possible:
+    push bc
+    push de
     ; check if the door is open
     ld a, [LEFT_DOOR + OAMA_TILEID]
     cp a, LEFT_DOOR_OPEN_ID
@@ -103,6 +105,8 @@ enter_door_possible:
             ld hl, RIGHT_DOOR
         
     .done
+    pop de
+    pop bc
     ret
 
 enter_door:

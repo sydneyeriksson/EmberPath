@@ -54,6 +54,8 @@ init_waters_2:
     ret
 
 evaporate_possible:
+    push bc
+    push de
     ld a, [PLAYER_SPRITE + OAMA_X]
     ld b, a
     ld a, [PLAYER_SPRITE + OAMA_Y]
@@ -100,6 +102,8 @@ evaporate_possible:
         ld hl, WATER_5
 
     .done
+    pop de
+    pop bc
     ret
 
 fire_evaporate:

@@ -238,11 +238,16 @@ move_player:
     ; Is A being held?
     push af
     bit PADB_A, a
-    ; Check if a jump is currently in action
     jr nz, .no_jump
         call jump_possible
 
     .no_jump
+    ; Check if a jump is currently in action
+    ; ld a, e
+    ; cp a, 0
+    ; jr nz, .no_jump_in_progress
+    ;     call jump
+    ; .no_jump_in_progress
     pop af
 
     ; Is up being held?
