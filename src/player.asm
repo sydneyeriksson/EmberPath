@@ -1,38 +1,39 @@
 ;
-; CS-240 World 5: First Draft
+; CS-240 World 6: First Draft
 ;
 ; @file player.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 9, 2025
+; @date April 14, 2025
 
 include "src/utils.inc"
 include "src/wram.inc"
 include "src/sprites.inc"
 
-def PLAYER_START_X        equ 32
-def PLAYER_START_Y        equ 16
-def FIRE_UPRIGHT_TILEID   equ 0
-def FIRE_BALL             equ 24
-def FIRE_MOVING_LEFT      equ 8
-def OAMA_NO_FLAGS         equ 0
-def SPRITE_MOVING_DOWN    equ 10
-def SPRITE_DONE_JUMPING   equ 16
-def END_FLICKER_TILE_ID   equ 6
+def PLAYER_START_X           equ 32
+def PLAYER_START_Y           equ 16
+def FIRE_UPRIGHT_TILEID      equ 0
+def FIRE_BALL                equ 24
+def FIRE_MOVING_SIDEWAYS     equ 8
+def OAMA_NO_FLAGS            equ 0
+def SPRITE_MOVING_DOWN       equ 10
+def SPRITE_DONE_JUMPING      equ 16
+def END_FLICKER_TILE_ID      equ 6
+
 
 section "fire", rom0
 
-macro move_right
+macro MoveRight
     ld a, [PLAYER_SPRITE + OAMA_X]
     inc a
     inc a
     ld [PLAYER_SPRITE + OAMA_X], a
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
-    Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_LEFT
+    Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_SIDEWAYS
     ; Checks if player can move there, undoes movement if not
     Copy b, [PLAYER_SPRITE + OAMA_X]
     Copy c, [PLAYER_SPRITE + OAMA_Y]
     ld a, c
-    add a, 8
+    add a, FIRE_MOVING_SIDEWAYS
     ld c, a
     call can_player_move_here
     jr z, .done\@
@@ -44,21 +45,21 @@ macro move_right
     .done\@
 endm
 
-macro move_left
+macro MoveLeft
     ld a, [PLAYER_SPRITE + OAMA_X]
     dec a
     dec a
     ld [PLAYER_SPRITE + OAMA_X], a
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_XFLIP | OAMF_PAL1
-    Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_LEFT
+    Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_SIDEWAYS
     ; Checks if player can move there, undoes movement if not
     Copy b, [PLAYER_SPRITE + OAMA_X]
     ld a, b
-    sub a, 8
+    sub a, FIRE_MOVING_SIDEWAYS
     ld b, a
     Copy c, [PLAYER_SPRITE + OAMA_Y]
     ld a, c
-    add a, 8
+    add a, FIRE_MOVING_SIDEWAYS
     ld c, a
     call can_player_move_here
     jr z, .done\@
@@ -69,13 +70,13 @@ macro move_left
     .done\@
 endm
 
-macro gravity
+macro Gravity
     ld a, [PLAYER_SPRITE + OAMA_Y]
     inc a
     ld [PLAYER_SPRITE + OAMA_Y], a
     ; Checks if player can move there, undoes movement if not
     Copy a, [PLAYER_SPRITE + OAMA_Y]
-    add a, 10
+    add a, SPRITE_MOVING_DOWN
     ld c, a
     Copy b, [PLAYER_SPRITE + OAMA_X]
     ld a, b
@@ -96,7 +97,7 @@ jump_possible:
     ld [PLAYER_SPRITE + OAMA_Y], a
     ; Checks if player can move down (is it on solid ground)
     Copy a, [PLAYER_SPRITE + OAMA_Y]
-    add a, 10
+    add a, SPRITE_MOVING_DOWN
     ld c, a
     ; make the x coordinate of the sprite the center of the sprite
     Copy b, [PLAYER_SPRITE + OAMA_X]
@@ -182,12 +183,14 @@ climb_ladder:
         ld a, [PLAYER_SPRITE + OAMA_Y]
         dec a
         ld [PLAYER_SPRITE + OAMA_Y], a
+        xor a
     .done
-
+    ret
+    
 ; makes the flame flicker
 flicker:
-    push af
     halt
+    push af
     ld a, [PLAYER_SPRITE + OAMA_TILEID]
     cp a, END_FLICKER_TILE_ID
     jr nc, .done
@@ -220,7 +223,7 @@ move_player:
     bit PADB_RIGHT, a
     jr nz, .done_moving_right
         ; move right
-        move_right
+        MoveRight
     .done_moving_right
     pop af
 
@@ -228,16 +231,7 @@ move_player:
     push af
     bit PADB_LEFT, a
     jr nz, .done_moving_left
-        ; move left
-        ; ld a, [PLAYER_SPRITE + OAMA_X]
-        ; dec a
-        ; ld [PLAYER_SPRITE + OAMA_X], a
-
-        ; ; reset the flame
-        ; ld a, [PLAYER_SPRITE + OAMA_TILEID]
-        ; Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_LEFT
-        ; Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_XFLIP | OAMF_PAL1
-        move_left
+        MoveLeft
     .done_moving_left
     pop af
 
@@ -258,13 +252,12 @@ move_player:
         call climb_ladder
         ; Check if fire is standing infront of a ladder
         
-        jr .done
+        jr z, .done
     .no_climb
+    Gravity
 
-    gravity
     .done
     pop af
-
     ret
 
 export init_player, move_player, flicker

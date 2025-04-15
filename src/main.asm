@@ -1,13 +1,14 @@
 ;
-; CS-240 World 5: First Draft
+; CS-240 World 6: First Draft
 ;
 ; @file main.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 9, 2025
+; @date April 14, 2025
 
 include "src/hardware.inc"
 include "src/joypad.inc"
 include "src/graphics.inc"
+include "src/sprites.inc"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -40,6 +41,7 @@ main:
     call init_player
     call init_door
     call init_level_1_torches
+    call init_waters
     EnableLCD
     ld e, 0
     ld d, 0
@@ -51,5 +53,7 @@ main:
         call move_player
         call light_torch
         call check_all_torches_lit
-        ;call open_and_close_door
+        call enter_door
+        call fire_evaporate
+        call check_A_pressed
         jr .game_loop
