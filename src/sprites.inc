@@ -25,6 +25,7 @@ def WATER_5             equ _OAMRAM + 11*sizeof_OAM_ATTRS
 
 def PLAYER_HIDE_X       equ 40
 def PLAYER_HIDE_Y       equ 253
+def FLOATING_OFFSET     equ 3
 
 ; make macro to check if sprites are colliding 
 ; \1 is  x_coordinate for the first sprite
@@ -63,6 +64,17 @@ macro FindOverlappingSprite
     
     cp a, c
     .not_overlapping\@
+endm
+
+; \1 is the sprite
+; \2 is the sprite start x
+; \3 is the sprite start y
+; \4 is the sprite tile ID
+macro InitSprite
+    Copy [\1 + OAMA_X], \2
+    Copy [\1 + OAMA_Y], \3
+    Copy [\1 + OAMA_TILEID], \4
+    Copy [\1 + OAMA_FLAGS], OAMF_PAL1
 endm
 
 endc

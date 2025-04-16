@@ -42,13 +42,6 @@ def TORCH_4_START_Y_L2   equ 112
 
 section "torch", rom0
 
-macro InitTorch
-    Copy [\1 + OAMA_X], \2
-    Copy [\1 + OAMA_Y], \3
-    Copy [\1 + OAMA_TILEID], \4
-    Copy [\1 + OAMA_FLAGS], OAMF_PAL1
-endm
-
 ; adds a number (\1) to hl
 ; returns sum in hl
 macro AddToHL
@@ -61,29 +54,33 @@ macro AddToHL
 endm
 
 init_level_1_torches:
-    InitTorch TORCH_1, TORCH_1_START_X, TORCH_1_START_Y, UNLIT_TORCH_TILE_ID
-    InitTorch TORCH_2, TORCH_2_START_X, TORCH_2_START_Y, UNLIT_TORCH_TILE_ID
-    InitTorch TORCH_3, TORCH_3_START_X, TORCH_3_START_Y, UNLIT_TORCH_TILE_ID
-    InitTorch TORCH_4, TORCH_4_START_X, TORCH_4_START_Y, UNLIT_TORCH_TILE_ID
+    InitSprite TORCH_1, TORCH_1_START_X, TORCH_1_START_Y, UNLIT_TORCH_TILE_ID
+    InitSprite TORCH_2, TORCH_2_START_X, TORCH_2_START_Y, UNLIT_TORCH_TILE_ID
+    InitSprite TORCH_3, TORCH_3_START_X, TORCH_3_START_Y, UNLIT_TORCH_TILE_ID
+    InitSprite TORCH_4, TORCH_4_START_X, TORCH_4_START_Y, UNLIT_TORCH_TILE_ID
     ret
 
-;init_level_2_torches:
 init_level_2_torches:
-    InitTorch TORCH_1, TORCH_1_START_X_L2, TORCH_1_START_Y_L2, UNLIT_TORCH_TILE_ID
-    InitTorch TORCH_2, TORCH_2_START_X_L2, TORCH_2_START_Y_L2, UNLIT_TORCH_TILE_ID
-    InitTorch TORCH_3, TORCH_3_START_X_L2, TORCH_3_START_Y_L2, UNLIT_TORCH_TILE_ID
-    InitTorch TORCH_4, TORCH_4_START_X_L2, TORCH_4_START_Y_L2, UNLIT_TORCH_TILE_ID
+    InitSprite TORCH_1, TORCH_1_START_X_L2, TORCH_1_START_Y_L2, UNLIT_TORCH_TILE_ID
+    InitSprite TORCH_2, TORCH_2_START_X_L2, TORCH_2_START_Y_L2, UNLIT_TORCH_TILE_ID
+    InitSprite TORCH_3, TORCH_3_START_X_L2, TORCH_3_START_Y_L2, UNLIT_TORCH_TILE_ID
+    InitSprite TORCH_4, TORCH_4_START_X_L2, TORCH_4_START_Y_L2, UNLIT_TORCH_TILE_ID
     ret
    
 ; check all torches (sprites after the doors but before the water?)
-; return whichever torch is overlapping
+; return whichever torch is overlapping in hl
+; also returns z if overlapping a torch and nz if not
 light_possible:
+    push bc
+    push de
+    ; Get player location
     ld a, [PLAYER_SPRITE + OAMA_X]
     ld b, a
     ld a, [PLAYER_SPRITE + OAMA_Y]
-    add a, 4
+    add a, FLOATING_OFFSET
     ld c, a
 
+    ; Check each torch to see if overlapping
     Copy d, [TORCH_1 + OAMA_X]
     Copy e, [TORCH_1 + OAMA_Y]
     FindOverlappingSprite b, c, d, e
@@ -115,29 +112,31 @@ light_possible:
         ld hl, TORCH_4
 
     .done
+    pop de
+    pop bc
     ret
-    
+
+; lights a torch if the player is in front of an unlit torch and DOWN is being held
 light_torch:
-    halt
+    push hl
     ; get the joypad buttons that are being held!
     ld a, [PAD_CURR]
 
     ; Is DOWN being held?
     bit PADB_DOWN, a
     jr nz, .dont_light
+        ; Check if player is infront of a torch
         call light_possible
         jr nz, .dont_light
             AddToHL OAMA_TILEID
             Copy [hl], START_TORCH_FLICKER_TILE_ID
 
     .dont_light
-
+    pop hl
     ret
 
 ; opens door if all torches lit
 check_all_torches_lit:
-    halt
-
     Copy a, [TORCH_1 + OAMA_TILEID]
     cp a, START_TORCH_FLICKER_TILE_ID
     jr nz, .not_lit

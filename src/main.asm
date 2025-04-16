@@ -43,8 +43,9 @@ main:
     call init_level_1_torches
     call init_waters
     EnableLCD
+    
+    ; init e as a jump counter
     ld e, 0
-    ld d, 0
 
     .game_loop
         halt

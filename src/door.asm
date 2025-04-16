@@ -60,22 +60,14 @@ init_door:
     Copy [RIGHT_DOOR + OAMA_FLAGS], OAMF_PAL1
     ret
 
+; Change the left and right door tile IDs so the door appears open
 open_door:
     Copy [LEFT_DOOR + OAMA_TILEID], LEFT_DOOR_OPEN_ID
     Copy [RIGHT_DOOR + OAMA_TILEID], RIGHT_DOOR_OPEN_ID
     ret
 
-; opens and closes the door, returns a counter in "d" 
-;       which signifies when to open and close the door
-open_and_close_door:
-    push af
-    halt
-    ChangeDoor LEFT_DOOR
-    ChangeDoor RIGHT_DOOR
-
-    pop af
-    ret
-
+; checks if the door is open and the player is touching it
+; returns z checked if so, nz if not
 enter_door_possible:
     push bc
     push de
@@ -83,37 +75,30 @@ enter_door_possible:
     ld a, [LEFT_DOOR + OAMA_TILEID]
     cp a, LEFT_DOOR_OPEN_ID
     jr nz, .done
-        ; if open, check if player is touching the door
+        ; if open, check if player is touching the left half of the door
         ld a, [PLAYER_SPRITE + OAMA_X]
         ld b, a
         ld a, [PLAYER_SPRITE + OAMA_Y]
-        add a, 4
+        add a, FLOATING_OFFSET
         ld c, a
 
         Copy d, [LEFT_DOOR + OAMA_X]
         Copy e, [LEFT_DOOR + OAMA_Y]
         FindOverlappingSprite b, c, d, e
-        jp nz, .right_door
-            ld hl, LEFT_DOOR
-            jp .done
-            
-        .right_door
-        Copy d, [RIGHT_DOOR + OAMA_X]
-        Copy e, [RIGHT_DOOR + OAMA_Y]
-        FindOverlappingSprite b, c, d, e
-        jp nz, .done
-            ld hl, RIGHT_DOOR
         
     .done
     pop de
     pop bc
     ret
 
+; Attempt to enter the door to go to the next level (currently only level 2)
+; Player can only enter if the door is open
 enter_door:
     halt
+    ; Check if the door is open and player is touching it
     call enter_door_possible
     jr nz, .dont_enter
-        ; if door is open and player is touching it, make next level appear
+        ; Make level 2 appear
         DisableLCD
         call load_level_2
         call init_player

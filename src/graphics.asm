@@ -75,10 +75,11 @@ init_graphics:
     pop af
     ret
 
+; is start is held, moves the window offscreen and sets b to 1
 move_window_offscreen:
     push af
     halt
-    ; get the joypad buttons that are being held!
+    ; get the joypad buttons that are being held
     ld a, [PAD_CURR]
     ; Is start being held?
     bit PADB_START, a
@@ -93,6 +94,7 @@ move_window_offscreen:
     pop af
     ret
 
+; moves the window off screen
 move_window_offscreen_no_start:
     push af
     halt
@@ -119,6 +121,7 @@ check_player_hiding:
     .done
     ret
 
+; Check if A is pressed after player has died
 check_A_pressed:
     halt
     ; get the joypad buttons that are being held!
@@ -126,6 +129,7 @@ check_A_pressed:
     ; Is A being held?
     bit PADB_A, a
     jr nz, .done
+        ; if player is offscreen (dead), restart the game
         call check_player_hiding
         jr nz, .done
         

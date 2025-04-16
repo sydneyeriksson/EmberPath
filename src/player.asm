@@ -23,12 +23,14 @@ def END_FLICKER_TILE_ID      equ 6
 section "fire", rom0
 
 macro MoveRight
+    ; move the player right
     ld a, [PLAYER_SPRITE + OAMA_X]
     inc a
     inc a
     ld [PLAYER_SPRITE + OAMA_X], a
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_SIDEWAYS
+
     ; Checks if player can move there, undoes movement if not
     Copy b, [PLAYER_SPRITE + OAMA_X]
     Copy c, [PLAYER_SPRITE + OAMA_Y]
@@ -37,6 +39,7 @@ macro MoveRight
     ld c, a
     call can_player_move_here
     jr z, .done\@
+        ; undo the movement
         ld a, [PLAYER_SPRITE + OAMA_X]
         dec a
         dec a
@@ -46,15 +49,18 @@ macro MoveRight
 endm
 
 macro MoveLeft
+    ; Move the player left
     ld a, [PLAYER_SPRITE + OAMA_X]
     dec a
     dec a
     ld [PLAYER_SPRITE + OAMA_X], a
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_XFLIP | OAMF_PAL1
     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_SIDEWAYS
+
     ; Checks if player can move there, undoes movement if not
     Copy b, [PLAYER_SPRITE + OAMA_X]
     ld a, b
+    ; offset the x and y coordinates to match the left side of the sprite
     sub a, FIRE_MOVING_SIDEWAYS
     ld b, a
     Copy c, [PLAYER_SPRITE + OAMA_Y]
@@ -63,6 +69,7 @@ macro MoveLeft
     ld c, a
     call can_player_move_here
     jr z, .done\@
+        ; undo the movement
         ld a, [PLAYER_SPRITE + OAMA_X]
         inc a
         inc a
@@ -71,18 +78,22 @@ macro MoveLeft
 endm
 
 macro Gravity
+    ; move the player 1 pixel down
     ld a, [PLAYER_SPRITE + OAMA_Y]
     inc a
     ld [PLAYER_SPRITE + OAMA_Y], a
-    ; Checks if player can move there, undoes movement if not
-    Copy a, [PLAYER_SPRITE + OAMA_Y]
     add a, SPRITE_MOVING_DOWN
+
+    ; load the x coordinate into b and y coordinate into b
     ld c, a
     Copy b, [PLAYER_SPRITE + OAMA_X]
     ld a, b
-    sub a, 4
+    sub a, FLOATING_OFFSET
     ld b, a
+
     call can_player_move_here
+
+    ; If player cannot move down, reset
     jr z, .done_first_check\@
         ld a, [PLAYER_SPRITE + OAMA_Y]
         dec a
@@ -90,7 +101,11 @@ macro Gravity
     .done_first_check\@
 endm
 
+; uses counter "e" which stores 
+;       what part of the jump the sprite is in
 jump_possible:
+    push af
+    push bc
     ; Check if player is on solid ground
     ld a, [PLAYER_SPRITE + OAMA_Y]
     inc a
@@ -102,8 +117,9 @@ jump_possible:
     ; make the x coordinate of the sprite the center of the sprite
     Copy b, [PLAYER_SPRITE + OAMA_X]
     ld a, b
-    sub a, 4
+    sub a, FLOATING_OFFSET
     ld b, a
+
     call can_player_move_here
     ; if on solid ground (collision detected), start a jump
     jr z, .no_start_jump
@@ -120,6 +136,9 @@ jump_possible:
     ld a, [PLAYER_SPRITE + OAMA_Y]
     dec a
     ld [PLAYER_SPRITE + OAMA_Y], a
+
+    pop bc
+    pop af
     ret
 
 init_player:
@@ -147,12 +166,11 @@ jump:
         ld [PLAYER_SPRITE + OAMA_Y], a
         inc e
         jr .done
-    .down
 
+    .down
     ; let sprite fall down with gravity
     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_YFLIP | OAMF_PAL1
-
     ; increment the jump counter "e"
     inc e
 
@@ -170,10 +188,14 @@ jump:
     ret
 
 climb_ladder: 
+    push af
+    push bc
+    ; get player location
     Copy c, [PLAYER_SPRITE + OAMA_Y]
     ld a, [PLAYER_SPRITE + OAMA_X]
-    sub a, 4
+    sub a, FLOATING_OFFSET
     ld b, a
+
     call infront_of_ladder
     jr nz, .done
         Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
@@ -182,9 +204,12 @@ climb_ladder:
         ; move sprite up
         ld a, [PLAYER_SPRITE + OAMA_Y]
         dec a
+        dec a
         ld [PLAYER_SPRITE + OAMA_Y], a
         xor a
     .done
+    pop bc
+    pop af
     ret
     
 ; makes the flame flicker
@@ -205,6 +230,7 @@ flicker:
     pop af
     ret
 
+; get button events, and move player
 move_player:
     halt
     ; reset the flame to upright position
@@ -218,7 +244,7 @@ move_player:
     ; get the joypad buttons that are being held!
     ld a, [PAD_CURR]
 
-    ; Is right being held?
+    ; If right held, move right
     push af
     bit PADB_RIGHT, a
     jr nz, .done_moving_right
@@ -227,7 +253,7 @@ move_player:
     .done_moving_right
     pop af
 
-    ; Is left being held?
+    ; If left held, move left
     push af
     bit PADB_LEFT, a
     jr nz, .done_moving_left
@@ -235,30 +261,22 @@ move_player:
     .done_moving_left
     pop af
 
-    ; Is A being held?
+    ; If a held, jump
     push af
     bit PADB_A, a
     jr nz, .no_jump
         call jump_possible
 
     .no_jump
-    ; Check if a jump is currently in action
-    ; ld a, e
-    ; cp a, 0
-    ; jr nz, .no_jump_in_progress
-    ;     call jump
-    ; .no_jump_in_progress
     pop af
 
-    ; Is up being held?
+    ; If up held, climb ladder
     push af
     bit PADB_UP, a
     jr nz, .no_climb
-        call climb_ladder
-        ; Check if fire is standing infront of a ladder
-        
-        jr z, .done
+        call climb_ladder     
     .no_climb
+
     Gravity
 
     .done

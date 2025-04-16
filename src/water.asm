@@ -30,87 +30,79 @@ def WATER_5_L2_X   equ 0
 
 section "water", rom0
 
-macro init_water
-    Copy [\1 + OAMA_X], \2
-    Copy [\1 + OAMA_Y], \3
-    Copy [\1 + OAMA_TILEID], WATER_ID
-    Copy [\1 + OAMA_FLAGS], OAMF_PAL1
-endm
-
 init_waters:
-    init_water WATER_1, WATER_1_L1_X, WATER_L1_Y
-    init_water WATER_2, WATER_2_L1_X, WATER_L1_Y
-    init_water WATER_3, WATER_3_L1_X, WATER_L1_Y
-    init_water WATER_4, WATER_4_L1_X, WATER_L1_Y
-    init_water WATER_5, WATER_5_L1_X, WATER_L1_Y
+    InitSprite WATER_1, WATER_1_L1_X, WATER_L1_Y, WATER_ID
+    InitSprite WATER_2, WATER_2_L1_X, WATER_L1_Y, WATER_ID
+    InitSprite WATER_3, WATER_3_L1_X, WATER_L1_Y, WATER_ID
+    InitSprite WATER_4, WATER_4_L1_X, WATER_L1_Y, WATER_ID
+    InitSprite WATER_5, WATER_5_L1_X, WATER_L1_Y, WATER_ID
     ret
 
 init_waters_2:
-    init_water WATER_1, WATER_1_L2_X, WATER_L2_Y
-    init_water WATER_2, WATER_2_L2_X, WATER_L2_Y
-    init_water WATER_3, WATER_3_L2_X, WATER_L2_Y
-    init_water WATER_4, WATER_4_L2_X, WATER_L2_Y
-    init_water WATER_5, WATER_5_L2_X, WATER_L2_Y
+    InitSprite WATER_1, WATER_1_L2_X, WATER_L2_Y, WATER_ID
+    InitSprite WATER_2, WATER_2_L2_X, WATER_L2_Y, WATER_ID
+    InitSprite WATER_3, WATER_3_L2_X, WATER_L2_Y, WATER_ID
+    InitSprite WATER_4, WATER_4_L2_X, WATER_L2_Y, WATER_ID
+    InitSprite WATER_5, WATER_5_L2_X, WATER_L2_Y, WATER_ID
     ret
 
+; check if the player is touching any of the water sprite tiles
+; return z if touching, nz if not
 evaporate_possible:
     push bc
     push de
+    push hl
+    ; get the player location
     ld a, [PLAYER_SPRITE + OAMA_X]
     ld b, a
     ld a, [PLAYER_SPRITE + OAMA_Y]
-    add a, 4
+    add a, FLOATING_OFFSET
     ld c, a
     ld hl, 0
 
+    ; check if player is touching any of the water sprites
     Copy d, [WATER_1 + OAMA_X]
     Copy e, [WATER_1 + OAMA_Y]
     FindOverlappingSprite b, c, d, e
-    jp nz, .water_2
-        ld hl, WATER_1
-        jp .done
-        
+    jp z, .done
+
     .water_2
     Copy d, [WATER_2 + OAMA_X]
     Copy e, [WATER_2 + OAMA_Y]
     FindOverlappingSprite b, c, d, e
-    jp nz, .water_3
-        ld hl, WATER_2
-        jp .done
+    jp z, .done
     
     .water_3
     Copy d, [WATER_3 + OAMA_X]
     Copy e, [WATER_3 + OAMA_Y]
     FindOverlappingSprite b, c, d, e
-    jp nz, .water_4
-        ld hl, WATER_3
-        jp .done
+    jp z, .done
 
     .water_4
     Copy d, [WATER_4 + OAMA_X]
     Copy e, [WATER_4 + OAMA_Y]
     FindOverlappingSprite b, c, d, e
-    jp nz, .water_5
-        ld hl, WATER_4
-        jp .done
+    jp z, .done
         
     .water_5
     Copy d, [WATER_5 + OAMA_X]
     Copy e, [WATER_5 + OAMA_Y]
     FindOverlappingSprite b, c, d, e
-    jp nz, .done
-        ld hl, WATER_5
+    jp z, .done
 
     .done
+    pop hl
     pop de
     pop bc
     ret
 
+; causes the player to die if it touches 
+;       the water, and goes to the game over screen
 fire_evaporate:
     halt
     call evaporate_possible
-    ; add condition for if evaporate_possible is not 0
     jr nz, .stay_alive
+        ; if the player is not touching the water, load the game_over screen
         DisableLCD
         call load_game_over
         InitOAM

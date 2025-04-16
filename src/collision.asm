@@ -19,6 +19,7 @@ section "collision", rom0
 ; \2 is global y_coordinate
 ; returns tile ID in a
 macro FindOverlappingTileID
+    push hl
     ; calculate what tile the sprite is on
     ; find y vertical row (divide y pixel height by 8)
     ld a, \2
@@ -65,15 +66,15 @@ macro FindOverlappingTileID
     ld bc, $9800
     add hl, bc
 
-    ld a, [hl]
-
-    ; check vram for tile ID
-    ; tilemap + calculated number    
+    ld a, [hl]   
+    pop hl
 endm
 
 ; \1 is tile ID
 ; returns z flag checked if no collision, nz if collision
 macro CheckIfCollision
+    push bc
+    push hl
     ; put the index we want to check in ROM into hl
     ld hl, $0000
     ld a, \1
@@ -105,6 +106,8 @@ macro CheckIfCollision
 
     .check_bit\@
     and a, [hl]
+    pop hl
+    pop bc
 endm
 
 ; b is sprite x_coordinate 
@@ -125,6 +128,8 @@ global_coordinates:
     ret
 
 ; checks if sprite is infront of ladder
+; b is sprite x_coordinate 
+; c is sprite y_coordinate
 ; returns z flag checked if it is, nz checked if not
 infront_of_ladder:
     call global_coordinates
@@ -133,6 +138,8 @@ infront_of_ladder:
     ret
 
 ; sets the zero flag if the player can go there, zero flag not set if collision
+; b is sprite x_coordinate 
+; c is sprite y_coordinate
 can_player_move_here:
     call global_coordinates
     FindOverlappingTileID b, c
