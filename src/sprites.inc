@@ -34,6 +34,7 @@ def FLOATING_OFFSET     equ 4
 ; \4 is  y_coordinate for the second sprite
 ; if colliding, set z flag
 macro FindOverlappingSprite
+    push bc
     ; calculate what sprite the player_sprite is on
     ; find y vertical row (divide y pixel height by 8)
     ld a, \2
@@ -64,6 +65,7 @@ macro FindOverlappingSprite
     
     cp a, c
     .not_overlapping\@
+    pop bc
 endm
 
 ; \1 is the sprite

@@ -25,7 +25,7 @@ def WATER_L2_Y     equ 64
 def WATER_1_L2_X   equ 64
 def WATER_2_L2_X   equ 72
 def WATER_3_L2_X   equ 96
-def WATER_4_L2_X   equ 102
+def WATER_4_L2_X   equ 104
 def WATER_5_L2_X   equ 0
 
 section "water", rom0
@@ -54,41 +54,36 @@ evaporate_possible:
     push hl
     ; get the player location
     ld a, [PLAYER_SPRITE + OAMA_X]
+    add a, 4
     ld b, a
     ld a, [PLAYER_SPRITE + OAMA_Y]
     add a, FLOATING_OFFSET
     ld c, a
-    ld hl, 0
 
-    ; check if player is touching any of the water sprites
+    ;check if player is touching any of the water sprites
     Copy d, [WATER_1 + OAMA_X]
     Copy e, [WATER_1 + OAMA_Y]
     FindOverlappingSprite b, c, d, e
     jp z, .done
 
-    .water_2
     Copy d, [WATER_2 + OAMA_X]
     Copy e, [WATER_2 + OAMA_Y]
     FindOverlappingSprite b, c, d, e
     jp z, .done
     
-    .water_3
     Copy d, [WATER_3 + OAMA_X]
     Copy e, [WATER_3 + OAMA_Y]
     FindOverlappingSprite b, c, d, e
     jp z, .done
 
-    .water_4
     Copy d, [WATER_4 + OAMA_X]
     Copy e, [WATER_4 + OAMA_Y]
     FindOverlappingSprite b, c, d, e
     jp z, .done
-        
-    .water_5
+
     Copy d, [WATER_5 + OAMA_X]
     Copy e, [WATER_5 + OAMA_Y]
     FindOverlappingSprite b, c, d, e
-    jp z, .done
 
     .done
     pop hl
@@ -99,8 +94,10 @@ evaporate_possible:
 ; causes the player to die if it touches 
 ;       the water, and goes to the game over screen
 fire_evaporate:
+    halt
     call evaporate_possible
     jr nz, .stay_alive
+        call player_death_sound
         ; if the player is not touching the water, load the game_over screen
         call game_over
     .stay_alive

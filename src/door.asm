@@ -62,6 +62,7 @@ init_door:
 
 ; Change the left and right door tile IDs so the door appears open
 open_door:
+    call door_open_sound
     Copy [LEFT_DOOR + OAMA_TILEID], LEFT_DOOR_OPEN_ID
     Copy [RIGHT_DOOR + OAMA_TILEID], RIGHT_DOOR_OPEN_ID
     ret

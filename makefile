@@ -2,8 +2,8 @@
 
 all: game.gb
 
-game.gb: build/main.o build/graphics.o build/player.o build/door.o build/collision.o build/torch.o build/water.o
-	rgblink --dmg --map game.map --sym game.sym -o game.gb build/main.o build/graphics.o build/player.o build/door.o build/collision.o build/torch.o build/water.o
+game.gb: build/main.o build/graphics.o build/player.o build/door.o build/collision.o build/torch.o build/water.o build/sound.o
+	rgblink --dmg --map game.map --sym game.sym -o game.gb build/main.o build/graphics.o build/player.o build/door.o build/collision.o build/torch.o build/water.o build/sound.o
 	rgbfix -v -p 0xFF game.gb
 
 build/main.o: src/main.asm src/*.inc build
@@ -26,6 +26,9 @@ build/torch.o: src/torch.asm src/*.inc assets/*.tlm assets/*.chr build
 
 build/water.o: src/water.asm src/*.inc assets/*.tlm assets/*.chr build
 	rgbasm -o build/water.o src/water.asm
+
+build/sound.o: src/sound.asm src/*.inc assets/*.tlm assets/*.chr build
+	rgbasm -o build/sound.o src/sound.asm
 
 
 build:

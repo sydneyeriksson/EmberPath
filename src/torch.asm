@@ -9,10 +9,11 @@ include "src/utils.inc"
 include "src/wram.inc"
 include "src/sprites.inc"
 
-def UNLIT_TORCH_TILE_ID          equ 50
+def UNLIT_TORCH_TILE_ID          equ 52
 def START_TORCH_FLICKER_TILE_ID  equ 52
 def END_TORCH_FLICKER_TILE_ID    equ 60
 def OAMA_NO_FLAGS                equ 0
+def LEFT_DOOR_OPEN_ID   equ 46
 
 ; level 1 torches:
 def TORCH_1_START_X   equ 112
@@ -100,7 +101,7 @@ light_possible:
     push de
     ; Get player location
     ld a, [PLAYER_SPRITE + OAMA_X]
-    add a, FLOATING_OFFSET
+    add a, 4
     ld b, a
     ld a, [PLAYER_SPRITE + OAMA_Y]
     add a, FLOATING_OFFSET
@@ -154,6 +155,7 @@ light_torch:
         ; Check if player is infront of a torch
         call light_possible
         jr nz, .dont_light
+            call torch_light_sound
             AddToHL OAMA_TILEID
             Copy [hl], START_TORCH_FLICKER_TILE_ID
 
@@ -163,24 +165,27 @@ light_torch:
 
 ; opens door if all torches lit
 check_all_torches_lit:
-    Copy a, [TORCH_1 + OAMA_TILEID]
-    cp a, START_TORCH_FLICKER_TILE_ID
-    jr c, .not_lit
+    Copy a, [LEFT_DOOR + OAMA_TILEID]
+    cp a, LEFT_DOOR_OPEN_ID
+    jr z, .done
+        Copy a, [TORCH_1 + OAMA_TILEID]
+        cp a, START_TORCH_FLICKER_TILE_ID
+        jr c, .done
 
-    Copy a, [TORCH_2 + OAMA_TILEID]
-    cp a, START_TORCH_FLICKER_TILE_ID
-    jr c, .not_lit
+        Copy a, [TORCH_2 + OAMA_TILEID]
+        cp a, START_TORCH_FLICKER_TILE_ID
+        jr c, .done
 
-    Copy a, [TORCH_3 + OAMA_TILEID]
-    cp a, START_TORCH_FLICKER_TILE_ID
-    jr c, .not_lit
+        Copy a, [TORCH_3 + OAMA_TILEID]
+        cp a, START_TORCH_FLICKER_TILE_ID
+        jr c, .done
 
-    Copy a, [TORCH_4 + OAMA_TILEID]
-    cp a, START_TORCH_FLICKER_TILE_ID
-    jr c, .not_lit
+        Copy a, [TORCH_4 + OAMA_TILEID]
+        cp a, START_TORCH_FLICKER_TILE_ID
+        jr c, .done
 
     call open_door
-    .not_lit
+    .done
     
     ret
     
