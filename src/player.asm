@@ -13,9 +13,9 @@ def PLAYER_START_X           equ 32
 def PLAYER_START_Y           equ 16
 def FIRE_UPRIGHT_TILEID      equ 0
 def FIRE_BALL                equ 24
-def FIRE_MOVING_SIDEWAYS     equ 8
+def FIRE_MOVING_SIDEWAYS     equ 6
 def OAMA_NO_FLAGS            equ 0
-def SPRITE_MOVING_DOWN       equ 10
+def SPRITE_MOVING_DOWN       equ 9
 def SPRITE_DONE_JUMPING      equ 16
 def END_FLICKER_TILE_ID      equ 6
 
@@ -214,7 +214,6 @@ climb_ladder:
     
 ; makes the flame flicker
 flicker:
-    halt
     push af
     ld a, [PLAYER_SPRITE + OAMA_TILEID]
     cp a, END_FLICKER_TILE_ID

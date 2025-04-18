@@ -25,7 +25,7 @@ def WATER_5             equ _OAMRAM + 11*sizeof_OAM_ATTRS
 
 def PLAYER_HIDE_X       equ 40
 def PLAYER_HIDE_Y       equ 253
-def FLOATING_OFFSET     equ 3
+def FLOATING_OFFSET     equ 4
 
 ; make macro to check if sprites are colliding 
 ; \1 is  x_coordinate for the first sprite

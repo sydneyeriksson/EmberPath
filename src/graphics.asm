@@ -147,11 +147,29 @@ check_A_pressed:
         EnableLCD
     .done
     ret
+
+count_down:
+    dec d
+    jr nz, .done
+        dec b
+        ld d, 10
+        jr nz, .done
+            call game_over
+    .done
+    ret
+
+game_over:
+    DisableLCD
+    call load_game_over
+    InitOAM
+    Copy [PLAYER_SPRITE + OAMA_X], PLAYER_HIDE_X
+    EnableLCD
+    ret
     
     
 
 export init_graphics
-export move_window_offscreen, load_level_2, load_game_over, check_A_pressed
+export move_window_offscreen, load_level_2, load_game_over, check_A_pressed, game_over, count_down
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

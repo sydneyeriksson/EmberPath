@@ -47,8 +47,19 @@ main:
     ; init e as a jump counter
     ld e, 0
 
+    ; init d as a second timer
+    ; 60 halts = 1 second
+    ; 6 halts in a loop
+    ; 10 decrements of d = 1 second
+    ld d, 10
+
+    ; init b as a countdown timer
+    ld b, 10
+
+    ; currently has 6 halts in a loop
     .game_loop
         halt
+        push bc
         UpdateJoypad
         call flicker
         call move_player
@@ -57,4 +68,7 @@ main:
         call enter_door
         call fire_evaporate
         call check_A_pressed
+        call flicker_torches
+        pop bc
+        ;call count_down
         jr .game_loop

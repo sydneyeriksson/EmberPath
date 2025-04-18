@@ -66,7 +66,32 @@ init_level_2_torches:
     InitSprite TORCH_3, TORCH_3_START_X_L2, TORCH_3_START_Y_L2, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_4, TORCH_4_START_X_L2, TORCH_4_START_Y_L2, UNLIT_TORCH_TILE_ID
     ret
-   
+ 
+; makes the torch flicker
+macro TorchFlicker
+    push af
+    ld a, [\1 + OAMA_TILEID]
+    cp a, UNLIT_TORCH_TILE_ID
+    jr z, .done\@
+        ; change between the flickering tileIDs
+        inc a
+        cp a, END_TORCH_FLICKER_TILE_ID
+        jr c, .skip_reset\@
+            ld a, START_TORCH_FLICKER_TILE_ID
+        .skip_reset\@
+        Copy [\1 + OAMA_TILEID], a
+    .done\@
+    pop af
+    endm 
+
+flicker_torches:
+    halt
+    TorchFlicker TORCH_1
+    TorchFlicker TORCH_2
+    TorchFlicker TORCH_3
+    TorchFlicker TORCH_4
+    ret
+
 ; check all torches (sprites after the doors but before the water?)
 ; return whichever torch is overlapping in hl
 ; also returns z if overlapping a torch and nz if not
@@ -75,6 +100,7 @@ light_possible:
     push de
     ; Get player location
     ld a, [PLAYER_SPRITE + OAMA_X]
+    add a, FLOATING_OFFSET
     ld b, a
     ld a, [PLAYER_SPRITE + OAMA_Y]
     add a, FLOATING_OFFSET
@@ -139,23 +165,23 @@ light_torch:
 check_all_torches_lit:
     Copy a, [TORCH_1 + OAMA_TILEID]
     cp a, START_TORCH_FLICKER_TILE_ID
-    jr nz, .not_lit
+    jr c, .not_lit
 
     Copy a, [TORCH_2 + OAMA_TILEID]
     cp a, START_TORCH_FLICKER_TILE_ID
-    jr nz, .not_lit
+    jr c, .not_lit
 
     Copy a, [TORCH_3 + OAMA_TILEID]
     cp a, START_TORCH_FLICKER_TILE_ID
-    jr nz, .not_lit
+    jr c, .not_lit
 
     Copy a, [TORCH_4 + OAMA_TILEID]
     cp a, START_TORCH_FLICKER_TILE_ID
-    jr nz, .not_lit
+    jr c, .not_lit
 
     call open_door
     .not_lit
     
     ret
     
-export init_level_1_torches, init_level_2_torches, light_torch, check_all_torches_lit
+export init_level_1_torches, init_level_2_torches, light_torch, check_all_torches_lit, flicker_torches

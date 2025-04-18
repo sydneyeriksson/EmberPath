@@ -99,15 +99,10 @@ evaporate_possible:
 ; causes the player to die if it touches 
 ;       the water, and goes to the game over screen
 fire_evaporate:
-    halt
     call evaporate_possible
     jr nz, .stay_alive
         ; if the player is not touching the water, load the game_over screen
-        DisableLCD
-        call load_game_over
-        InitOAM
-        Copy [PLAYER_SPRITE + OAMA_X], PLAYER_HIDE_X
-        EnableLCD
+        call game_over
     .stay_alive
     ret
 
