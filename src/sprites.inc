@@ -22,6 +22,13 @@ def WATER_2             equ _OAMRAM + 8*sizeof_OAM_ATTRS
 def WATER_3             equ _OAMRAM + 9*sizeof_OAM_ATTRS
 def WATER_4             equ _OAMRAM + 10*sizeof_OAM_ATTRS
 def WATER_5             equ _OAMRAM + 11*sizeof_OAM_ATTRS
+def ONES_TIMER          equ _OAMRAM + 12*sizeof_OAM_ATTRS
+def TENS_TIMER          equ _OAMRAM + 13*sizeof_OAM_ATTRS
+def LARGE_SPIKE_1       equ _OAMRAM + 14*sizeof_OAM_ATTRS
+def LARGE_SPIKE_2       equ _OAMRAM + 15*sizeof_OAM_ATTRS
+def SMALL_SPIKE_1       equ _OAMRAM + 16*sizeof_OAM_ATTRS
+def SMALL_SPIKE_2       equ _OAMRAM + 17*sizeof_OAM_ATTRS
+def SMALL_SPIKE_3       equ _OAMRAM + 18*sizeof_OAM_ATTRS
 
 def PLAYER_HIDE_X       equ 40
 def PLAYER_HIDE_Y       equ 253

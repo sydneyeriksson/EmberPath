@@ -84,21 +84,29 @@ macro Gravity
     ld [PLAYER_SPRITE + OAMA_Y], a
     add a, SPRITE_MOVING_DOWN
 
-    ; load the x coordinate into b and y coordinate into b
+    ; load the x coordinate into b and y coordinate into c
     ld c, a
     Copy b, [PLAYER_SPRITE + OAMA_X]
     ld a, b
-    sub a, FLOATING_OFFSET
+    sub a, FIRE_MOVING_SIDEWAYS
     ld b, a
-
     call can_player_move_here
+    jr nz, .reset\@
 
+    Copy b, [PLAYER_SPRITE + OAMA_X]
+    ld a, b
+    sub a, FIRE_MOVING_SIDEWAYS
+    ld b, a
+    call can_player_move_here
     ; If player cannot move down, reset
-    jr z, .done_first_check\@
-        ld a, [PLAYER_SPRITE + OAMA_Y]
-        dec a
-        ld [PLAYER_SPRITE + OAMA_Y], a
-    .done_first_check\@
+    jr z, .done\@
+
+    .reset\@
+    ld a, [PLAYER_SPRITE + OAMA_Y]
+    dec a
+    ld [PLAYER_SPRITE + OAMA_Y], a
+
+    .done\@
 endm
 
 ; uses counter "e" which stores 
@@ -231,7 +239,6 @@ flicker:
 
 ; get button events, and move player
 move_player:
-    halt
     ; reset the flame to upright position
     ld a, [PLAYER_SPRITE + OAMA_TILEID]
     cp a, END_FLICKER_TILE_ID

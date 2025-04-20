@@ -12,6 +12,7 @@ include "src/hardware.inc"
 include "src/joypad.inc"
 include "src/graphics.inc"
 
+; water
 def WATER_ID    equ 61
 
 def WATER_L1_Y     equ 120
@@ -27,6 +28,33 @@ def WATER_2_L2_X   equ 72
 def WATER_3_L2_X   equ 96
 def WATER_4_L2_X   equ 104
 def WATER_5_L2_X   equ 0
+
+def WATER_L3_Y     equ 128
+def WATER_1_L3_X   equ 112
+def WATER_2_L3_X   equ 120
+def WATER_3_L3_X   equ 128
+def WATER_4_L3_X   equ 136
+def WATER_5_L3_X   equ 0
+
+; spikes
+def LARGE_SPIKE_ID    equ 15
+def SMALL_SPIKE_ID    equ 13
+
+def LARGE_SPIKE_1_L3_X   equ 88
+def LARGE_SPIKE_1_L3_Y   equ 16
+
+def LARGE_SPIKE_2_L3_X   equ 36
+def LARGE_SPIKE_2_L3_Y   equ 104
+
+def SMALL_SPIKE_1_L3_X   equ 80
+def SMALL_SPIKE_1_L3_Y   equ 16
+
+def SMALL_SPIKE_2_L3_X   equ 8
+def SMALL_SPIKE_2_L3_Y   equ 104
+
+def SMALL_SPIKE_3_L3_X   equ 24
+def SMALL_SPIKE_3_L3_Y   equ 104
+*/
 
 section "water", rom0
 
@@ -45,6 +73,30 @@ init_waters_2:
     InitSprite WATER_4, WATER_4_L2_X, WATER_L2_Y, WATER_ID
     InitSprite WATER_5, WATER_5_L2_X, WATER_L2_Y, WATER_ID
     ret
+
+init_waters_3:
+    InitSprite WATER_1, WATER_1_L3_X, WATER_L3_Y, WATER_ID
+    InitSprite WATER_2, WATER_2_L3_X, WATER_L3_Y, WATER_ID
+    InitSprite WATER_3, WATER_3_L3_X, WATER_L3_Y, WATER_ID
+    InitSprite WATER_4, WATER_4_L3_X, WATER_L3_Y, WATER_ID
+    InitSprite WATER_5, WATER_5_L3_X, WATER_L3_Y, WATER_ID
+    ret
+
+/** 
+init_spikes_1:
+    InitSprite LARGE_SPIKE_1
+    InitSprite LARGE_SPIKE_2
+    InitSprite SMALL_SPIKE_1
+    InitSprite SMALL_SPIKE_2
+    InitSprite SMALL_SPIKE_3
+    ret
+
+init_spikes_2:
+    ret
+
+init_spikes_3:
+    ret
+*/
 
 ; check if the player is touching any of the water sprite tiles
 ; return z if touching, nz if not
@@ -94,7 +146,6 @@ evaporate_possible:
 ; causes the player to die if it touches 
 ;       the water, and goes to the game over screen
 fire_evaporate:
-    halt
     call evaporate_possible
     jr nz, .stay_alive
         call player_death_sound
@@ -103,4 +154,4 @@ fire_evaporate:
     .stay_alive
     ret
 
-export init_waters, init_waters_2, fire_evaporate
+export init_waters, init_waters_2, init_waters_3, fire_evaporate

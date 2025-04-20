@@ -78,7 +78,6 @@ init_graphics:
 ; is start is held, moves the window offscreen and sets b to 1
 move_window_offscreen:
     push af
-    halt
     ; get the joypad buttons that are being held
     ld a, [PAD_CURR]
     ; Is start being held?
@@ -97,7 +96,6 @@ move_window_offscreen:
 ; moves the window off screen
 move_window_offscreen_no_start:
     push af
-    halt
     ld a, WINDOW_OFFSCREEN
     ld [rWY], a
     pop af
@@ -123,7 +121,6 @@ check_player_hiding:
 
 ; Check if A is pressed after player has died
 check_A_pressed:
-    halt
     ; get the joypad buttons that are being held!
     ld a, [PAD_CURR]
     ; Is A being held?
@@ -174,8 +171,8 @@ export move_window_offscreen, load_level_2, load_game_over, check_A_pressed, gam
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 section "graphics_data", rom0[GRAPHICS_DATA_ADDRESS_START]
-incbin "assets/tileset_empty_torch.chr"
-incbin "assets/ladder_touching.tlm"
+incbin "assets/tileset_numbers.chr"
+incbin "assets/level_1.tlm"
 incbin "assets/window.tlm"
 incbin "assets/level_2.tlm"
-incbin "assets/tilemap_game_over.tlm"
+incbin "assets/level_3.tlm"

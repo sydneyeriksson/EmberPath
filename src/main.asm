@@ -42,6 +42,7 @@ main:
     call init_door
     call init_level_1_torches
     call init_waters
+    call init_timer
     EnableLCD
     
     ; init e as a jump counter
@@ -49,12 +50,12 @@ main:
 
     ; init d as a second timer
     ; 60 halts = 1 second
-    ; 6 halts in a loop
-    ; 10 decrements of d = 1 second
-    ld d, 10
+    ; 4 halts in a loop
+    ; 15 decrements of d = 1 second
+    ld d, 15
 
-    ; init b as a countdown timer
-    ld b, 10
+    ; init c as a tens seconds countdown timer
+    ld c, 6
 
     ; currently has 6 halts in a loop
     .game_loop
@@ -65,10 +66,14 @@ main:
         call move_player
         call light_torch
         call check_all_torches_lit
+        halt
         call enter_door
         call fire_evaporate
+        halt
         call check_A_pressed
+        halt
         call flicker_torches
+        call update_timer
         pop bc
         ;call count_down
         jr .game_loop

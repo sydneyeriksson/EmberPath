@@ -95,7 +95,6 @@ enter_door_possible:
 ; Attempt to enter the door to go to the next level (currently only level 2)
 ; Player can only enter if the door is open
 enter_door:
-    halt
     ; Check if the door is open and player is touching it
     call enter_door_possible
     jr nz, .dont_enter
