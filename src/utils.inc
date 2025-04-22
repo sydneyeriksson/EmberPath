@@ -1,9 +1,9 @@
 ;
-; CS-240 World 6: First Draft
+; CS-240 World 7: Feature Complete
 ;
 ; @file utils.inc
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 14, 2025
+; @date April 21, 2025
 
 if !def(UTILS_RGBINC)
 def UTILS_RGBINC equ 1

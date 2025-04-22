@@ -1,9 +1,9 @@
 ;
-; CS-240 World 6: First Draft
+; CS-240 World 7: Feature Complete
 ;
 ; @file player.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 14, 2025
+; @date April 21, 2025
 
 include "src/utils.inc"
 include "src/wram.inc"
@@ -23,6 +23,7 @@ def END_FLICKER_TILE_ID      equ 6
 section "fire", rom0
 
 macro MoveRight
+    push bc
     ; move the player right
     ld a, [PLAYER_SPRITE + OAMA_X]
     inc a
@@ -46,9 +47,11 @@ macro MoveRight
         ld [PLAYER_SPRITE + OAMA_X], a
         Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
     .done\@
+    pop bc
 endm
 
 macro MoveLeft
+    push bc
     ; Move the player left
     ld a, [PLAYER_SPRITE + OAMA_X]
     dec a
@@ -75,9 +78,11 @@ macro MoveLeft
         inc a
         ld [PLAYER_SPRITE + OAMA_X], a
     .done\@
+    pop bc
 endm
 
 macro Gravity
+    push bc
     ; move the player 1 pixel down
     ld a, [PLAYER_SPRITE + OAMA_Y]
     inc a
@@ -88,31 +93,23 @@ macro Gravity
     ld c, a
     Copy b, [PLAYER_SPRITE + OAMA_X]
     ld a, b
-    sub a, FIRE_MOVING_SIDEWAYS
+    sub a, FLOATING_OFFSET
     ld b, a
     call can_player_move_here
-    jr nz, .reset\@
-
-    Copy b, [PLAYER_SPRITE + OAMA_X]
-    ld a, b
-    sub a, FIRE_MOVING_SIDEWAYS
-    ld b, a
-    call can_player_move_here
-    ; If player cannot move down, reset
     jr z, .done\@
 
-    .reset\@
+    ; .reset\@
     ld a, [PLAYER_SPRITE + OAMA_Y]
     dec a
     ld [PLAYER_SPRITE + OAMA_Y], a
 
     .done\@
+    pop bc
 endm
 
 ; uses counter "e" which stores 
 ;       what part of the jump the sprite is in
 jump_possible:
-    push af
     push bc
     ; Check if player is on solid ground
     ld a, [PLAYER_SPRITE + OAMA_Y]
@@ -146,7 +143,6 @@ jump_possible:
     ld [PLAYER_SPRITE + OAMA_Y], a
 
     pop bc
-    pop af
     ret
 
 init_player:

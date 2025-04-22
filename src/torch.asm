@@ -1,15 +1,15 @@
 ;
-; CS-240 World 6: First Draft
+; CS-240 World 7: Feature Complete
 ;
 ; @file torch.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 14, 2025
+; @date April 21, 2025
 
 include "src/utils.inc"
 include "src/wram.inc"
 include "src/sprites.inc"
 
-def UNLIT_TORCH_TILE_ID          equ 50
+def UNLIT_TORCH_TILE_ID          equ 52
 def START_TORCH_FLICKER_TILE_ID  equ 52
 def END_TORCH_FLICKER_TILE_ID    equ 60
 def OAMA_NO_FLAGS                equ 0
@@ -36,23 +36,23 @@ def TORCH_2_START_X_L2   equ 64
 def TORCH_2_START_Y_L2   equ 88
 
 def TORCH_3_START_X_L2   equ 16
-def TORCH_3_START_Y_L2   equ 128
+def TORCH_3_START_Y_L2   equ 112
 
 def TORCH_4_START_X_L2   equ 152
 def TORCH_4_START_Y_L2   equ 112
 
 ; level 3 torches:
 def TORCH_1_START_X_L3   equ 96
-def TORCH_1_START_Y_L3   equ 88
+def TORCH_1_START_Y_L3   equ 96
 
 def TORCH_2_START_X_L3   equ 152
-def TORCH_2_START_Y_L3   equ 104
+def TORCH_2_START_Y_L3   equ 112
 
 def TORCH_3_START_X_L3   equ 8
-def TORCH_3_START_Y_L3   equ 64
+def TORCH_3_START_Y_L3   equ 72
 
 def TORCH_4_START_X_L3   equ 64
-def TORCH_4_START_Y_L3   equ 56
+def TORCH_4_START_Y_L3   equ 64
 
 section "torch", rom0
 

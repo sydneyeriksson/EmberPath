@@ -1,9 +1,9 @@
 ;
-; CS-240 World 6: First Draft
+; CS-240 World 7: Feature Complete
 ;
 ; @file graphics.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 14, 2025
+; @date April 21, 2025
 
 include "src/utils.inc"
 include "src/wram.inc"
@@ -21,15 +21,17 @@ def TILES_COUNT                     equ (384)
 def BYTES_PER_TILE                  equ (16)
 def TILES_BYTE_SIZE                 equ (TILES_COUNT * BYTES_PER_TILE)
 
-def TILEMAPS_COUNT                  equ (4)
+def TILEMAPS_COUNT                  equ (6)
 def BYTES_PER_TILEMAP               equ (1024)
 def TILEMAPS_BYTE_SIZE              equ (TILEMAPS_COUNT * BYTES_PER_TILEMAP)
 
 def GRAPHICS_DATA_SIZE              equ (TILES_BYTE_SIZE + TILEMAPS_BYTE_SIZE)
 def GRAPHICS_DATA_ADDRESS_END       equ ($4000)
 def GRAPHICS_DATA_ADDRESS_START     equ (GRAPHICS_DATA_ADDRESS_END - GRAPHICS_DATA_SIZE)
-def TILEMAP_LEVEL_2_START           equ (GRAPHICS_DATA_ADDRESS_END - 2*BYTES_PER_TILEMAP)
-def TILEMAP_GAME_OVER_START         equ (GRAPHICS_DATA_ADDRESS_END - BYTES_PER_TILEMAP)
+def TILEMAP_LEVEL_2_START           equ (GRAPHICS_DATA_ADDRESS_END - 4*BYTES_PER_TILEMAP)
+def TILEMAP_LEVEL_3_START           equ (GRAPHICS_DATA_ADDRESS_END - 3*BYTES_PER_TILEMAP)
+def TILEMAP_GAME_OVER_START         equ (GRAPHICS_DATA_ADDRESS_END - 2*BYTES_PER_TILEMAP)
+def TILEMAP_GAME_WON_START          equ (GRAPHICS_DATA_ADDRESS_END - BYTES_PER_TILEMAP)
 
 def WINDOW_GRAPHIC_HEIGHT       equ (40)
 def PAUSE_FRAMES                equ (20)
@@ -100,23 +102,27 @@ move_window_offscreen_no_start:
     ld [rWY], a
     pop af
     ret
-
+        
 load_level_2:
-    LoadNewMapDataIntoVRAM TILEMAP_LEVEL_2_START, TILEMAP_GAME_OVER_START
+    LoadNewMapDataIntoVRAM TILEMAP_LEVEL_2_START, TILEMAP_LEVEL_3_START
+    ret
+
+load_level_3:
+    LoadNewMapDataIntoVRAM TILEMAP_LEVEL_3_START, TILEMAP_GAME_OVER_START
     ret
 
 load_game_over:
-    LoadNewMapDataIntoVRAM TILEMAP_GAME_OVER_START, GRAPHICS_DATA_ADDRESS_END
+    LoadNewMapDataIntoVRAM TILEMAP_GAME_OVER_START, TILEMAP_GAME_WON_START
+    ret
+
+load_game_won:
+    LoadNewMapDataIntoVRAM TILEMAP_GAME_WON_START, GRAPHICS_DATA_ADDRESS_END
     ret
 
 ; sets z flag if player is hiding
-check_player_hiding:
-    ld a, [PLAYER_SPRITE + OAMA_X]
-    cp a, PLAYER_HIDE_X
-    jr nz, .done
-    ld a, [PLAYER_SPRITE + OAMA_Y]
-    cp a, PLAYER_HIDE_Y
-    .done
+check_end_screen:
+    ld a, c
+    cp a, 4
     ret
 
 ; Check if A is pressed after player has died
@@ -127,8 +133,8 @@ check_A_pressed:
     bit PADB_A, a
     jr nz, .done
         ; if player is offscreen (dead), restart the game
-        call check_player_hiding
-        jr nz, .done
+        call check_end_screen
+        jr z, .done
         
         DisableLCD
         call init_graphics
@@ -141,6 +147,8 @@ check_A_pressed:
         call init_door
         call init_level_1_torches
         call init_waters
+        call init_timer
+        ld c, 1
         EnableLCD
     .done
     ret
@@ -155,24 +163,36 @@ count_down:
     .done
     ret
 
+; loads the game over screen and hides the player
 game_over:
+    ld c, 4
     DisableLCD
     call load_game_over
     InitOAM
     Copy [PLAYER_SPRITE + OAMA_X], PLAYER_HIDE_X
     EnableLCD
     ret
-    
+
+; loads the game won screen and hides the player
+game_won:
+    ld c, 4
+   ;DisableLCD
+    call load_game_won
+    InitOAM
+    Copy [PLAYER_SPRITE + OAMA_X], PLAYER_HIDE_X
+    ;EnableLCD
+    ret
     
 
-export init_graphics
-export move_window_offscreen, load_level_2, load_game_over, check_A_pressed, game_over, count_down
+export move_window_offscreen, load_level_2, load_game_over, check_A_pressed, game_over, count_down, load_level_3, game_won, init_graphics
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 section "graphics_data", rom0[GRAPHICS_DATA_ADDRESS_START]
 incbin "assets/tileset_numbers.chr"
 incbin "assets/level_1.tlm"
-incbin "assets/window.tlm"
+incbin "assets/correct_window.tlm"
 incbin "assets/level_2.tlm"
-incbin "assets/level_3.tlm"
+incbin "assets/third_level_ladders.tlm"
+incbin "assets/game_over_map.tlm"
+incbin "assets/congratulations.tlm"

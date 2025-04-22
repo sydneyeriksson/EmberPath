@@ -1,9 +1,9 @@
 ;
-; CS-240 World 6: First Draft
+; CS-240 World 7: Feature Complete
 ;
 ; @file water.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 14, 2025
+; @date April 21, 2025
 
 include "src/utils.inc"
 include "src/wram.inc"
@@ -29,32 +29,32 @@ def WATER_3_L2_X   equ 96
 def WATER_4_L2_X   equ 104
 def WATER_5_L2_X   equ 0
 
-def WATER_L3_Y     equ 128
-def WATER_1_L3_X   equ 112
-def WATER_2_L3_X   equ 120
-def WATER_3_L3_X   equ 128
-def WATER_4_L3_X   equ 136
+def WATER_L3_Y     equ 136
+def WATER_1_L3_X   equ 122
+def WATER_2_L3_X   equ 130
+def WATER_3_L3_X   equ 138
+def WATER_4_L3_X   equ 146
 def WATER_5_L3_X   equ 0
 
 ; spikes
 def LARGE_SPIKE_ID    equ 15
 def SMALL_SPIKE_ID    equ 13
+def OFF_SCREEN        equ 0
 
 def LARGE_SPIKE_1_L3_X   equ 88
-def LARGE_SPIKE_1_L3_Y   equ 16
+def LARGE_SPIKE_1_L3_Y   equ 24
 
-def LARGE_SPIKE_2_L3_X   equ 36
-def LARGE_SPIKE_2_L3_Y   equ 104
+def LARGE_SPIKE_2_L3_X   equ 40
+def LARGE_SPIKE_2_L3_Y   equ 112
 
 def SMALL_SPIKE_1_L3_X   equ 80
-def SMALL_SPIKE_1_L3_Y   equ 16
+def SMALL_SPIKE_1_L3_Y   equ 24
 
-def SMALL_SPIKE_2_L3_X   equ 8
-def SMALL_SPIKE_2_L3_Y   equ 104
+def SMALL_SPIKE_2_L3_X   equ 16
+def SMALL_SPIKE_2_L3_Y   equ 112
 
-def SMALL_SPIKE_3_L3_X   equ 24
-def SMALL_SPIKE_3_L3_Y   equ 104
-*/
+def SMALL_SPIKE_3_L3_X   equ 32
+def SMALL_SPIKE_3_L3_Y   equ 112
 
 section "water", rom0
 
@@ -82,21 +82,13 @@ init_waters_3:
     InitSprite WATER_5, WATER_5_L3_X, WATER_L3_Y, WATER_ID
     ret
 
-/** 
-init_spikes_1:
-    InitSprite LARGE_SPIKE_1
-    InitSprite LARGE_SPIKE_2
-    InitSprite SMALL_SPIKE_1
-    InitSprite SMALL_SPIKE_2
-    InitSprite SMALL_SPIKE_3
-    ret
-
-init_spikes_2:
-    ret
-
 init_spikes_3:
+    InitSprite LARGE_SPIKE_1, LARGE_SPIKE_1_L3_X, LARGE_SPIKE_1_L3_Y, LARGE_SPIKE_ID
+    InitSprite LARGE_SPIKE_2, LARGE_SPIKE_2_L3_X, LARGE_SPIKE_2_L3_Y, LARGE_SPIKE_ID
+    InitSprite SMALL_SPIKE_1, SMALL_SPIKE_1_L3_X, SMALL_SPIKE_1_L3_Y, SMALL_SPIKE_ID
+    InitSprite SMALL_SPIKE_2, SMALL_SPIKE_2_L3_X, SMALL_SPIKE_2_L3_Y, SMALL_SPIKE_ID
+    InitSprite SMALL_SPIKE_3, SMALL_SPIKE_3_L3_X, SMALL_SPIKE_3_L3_Y, SMALL_SPIKE_ID
     ret
-*/
 
 ; check if the player is touching any of the water sprite tiles
 ; return z if touching, nz if not
@@ -136,6 +128,31 @@ evaporate_possible:
     Copy d, [WATER_5 + OAMA_X]
     Copy e, [WATER_5 + OAMA_Y]
     FindOverlappingSprite b, c, d, e
+    jp z, .done
+
+    Copy d, [LARGE_SPIKE_1 + OAMA_X]
+    Copy e, [LARGE_SPIKE_1 + OAMA_Y]
+    FindOverlappingSprite b, c, d, e
+    jp z, .done
+
+    Copy d, [LARGE_SPIKE_2 + OAMA_X]
+    Copy e, [LARGE_SPIKE_2 + OAMA_Y]
+    FindOverlappingSprite b, c, d, e
+    jp z, .done
+
+    Copy d, [SMALL_SPIKE_1 + OAMA_X]
+    Copy e, [SMALL_SPIKE_1 + OAMA_Y]
+    FindOverlappingSprite b, c, d, e
+    jp z, .done
+
+    Copy d, [SMALL_SPIKE_2 + OAMA_X]
+    Copy e, [SMALL_SPIKE_2 + OAMA_Y]
+    FindOverlappingSprite b, c, d, e
+    jp z, .done
+
+    Copy d, [SMALL_SPIKE_3 + OAMA_X]
+    Copy e, [SMALL_SPIKE_3 + OAMA_Y]
+    FindOverlappingSprite b, c, d, e
 
     .done
     pop hl
@@ -154,4 +171,4 @@ fire_evaporate:
     .stay_alive
     ret
 
-export init_waters, init_waters_2, init_waters_3, fire_evaporate
+export init_waters_1, init_waters_2, init_waters_3, init_spikes_3, fire_evaporate, init_waters

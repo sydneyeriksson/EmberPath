@@ -1,9 +1,9 @@
 ;
-; CS-240 World 6: First Draft
+; CS-240 World 7: Feature Complete
 ;
 ; @file collision.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 14, 2025
+; @date April 21, 2025
 
 include "src/hardware.inc"
 include "src/joypad.inc"
@@ -132,18 +132,22 @@ global_coordinates:
 ; c is sprite y_coordinate
 ; returns z flag checked if it is, nz checked if not
 infront_of_ladder:
+    push bc
     call global_coordinates
     FindOverlappingTileID b, c
     cp a, LADDER_TILE_ID
+    pop bc
     ret
 
 ; sets the zero flag if the player can go there, zero flag not set if collision
 ; b is sprite x_coordinate 
 ; c is sprite y_coordinate
 can_player_move_here:
+    push bc
     call global_coordinates
     FindOverlappingTileID b, c
     CheckIfCollision a
+    pop bc
     ret
 
-export can_player_move_here, load_collision_tiles_into_ROM, infront_of_ladder, global_coordinates
+export can_player_move_here, load_collision_tiles_into_ROM, infront_of_ladder

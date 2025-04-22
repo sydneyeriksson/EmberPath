@@ -24,6 +24,7 @@ endm
 
 macro UpdateJoypad
     ; store the previous input into the struct and (c)
+    push bc
     ld a, [PAD_CURR]
     ld [PAD_PREV], a
     ld c, a
@@ -72,6 +73,7 @@ macro UpdateJoypad
     cpl
     or a, c
     ld [PAD_RLSE], a
+    pop bc
 endm
 
 endc

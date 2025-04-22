@@ -1,9 +1,9 @@
 ;
-; CS-240 World 6: First Draft
+; CS-240 World 7: Feature Complete
 ;
 ; @file sprites.inc
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 14, 2025
+; @date April 21, 2025
 
 if !def(SPRITES_RGBINC)
 def SPRITES_RGBINC equ 1
@@ -29,8 +29,10 @@ def LARGE_SPIKE_2       equ _OAMRAM + 15*sizeof_OAM_ATTRS
 def SMALL_SPIKE_1       equ _OAMRAM + 16*sizeof_OAM_ATTRS
 def SMALL_SPIKE_2       equ _OAMRAM + 17*sizeof_OAM_ATTRS
 def SMALL_SPIKE_3       equ _OAMRAM + 18*sizeof_OAM_ATTRS
+def MINUTE_TIMER        equ _OAMRAM + 19*sizeof_OAM_ATTRS
+def COLON               equ _OAMRAM + 20*sizeof_OAM_ATTRS
 
-def PLAYER_HIDE_X       equ 40
+def PLAYER_HIDE_X       equ 180
 def PLAYER_HIDE_Y       equ 253
 def FLOATING_OFFSET     equ 4
 

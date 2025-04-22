@@ -1,9 +1,9 @@
 ;
-; CS-240 World 6: First Draft
+; CS-240 World 7: Feature Complete
 ;
 ; @file door.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 14, 2025
+; @date April 21, 2025
 
 include "src/utils.inc"
 include "src/wram.inc"
@@ -92,20 +92,48 @@ enter_door_possible:
     pop bc
     ret
 
-; Attempt to enter the door to go to the next level (currently only level 2)
+; Attempt to enter the door to go to the next level 
 ; Player can only enter if the door is open
 enter_door:
     ; Check if the door is open and player is touching it
     call enter_door_possible
     jr nz, .dont_enter
-        ; Make level 2 appear
+
+        ; Make next level appear
         DisableLCD
+        ld a, c
+        cp a, 1
+        jr nz, .not_on_first
         call load_level_2
         call init_player
         call init_door
         call init_level_2_torches
         call init_waters_2
+        call init_timer
+        inc c
+        jr .done
+
+        .not_on_first
+        ld a, c
+        cp a, 2
+        jr nz, .not_on_second
+        call load_level_3
+        call init_player
+        call init_door
+        call init_level_3_torches
+        call init_waters_3
+        call init_spikes_3
+        call init_timer
+        inc c
+        jr .done
+
+        .not_on_second
+        call game_won
+        ld c, 1
+
+        .done
         EnableLCD
+
     .dont_enter
     ret
 
