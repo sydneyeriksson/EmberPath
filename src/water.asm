@@ -48,7 +48,7 @@ def LARGE_SPIKE_2_L3_X   equ 40
 def LARGE_SPIKE_2_L3_Y   equ 112
 
 def SMALL_SPIKE_1_L3_X   equ 80
-def SMALL_SPIKE_1_L3_Y   equ 24
+def SMALL_SPIKE_1_L3_Y   equ 0
 
 def SMALL_SPIKE_2_L3_X   equ 16
 def SMALL_SPIKE_2_L3_Y   equ 112

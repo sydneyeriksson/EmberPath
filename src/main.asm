@@ -62,6 +62,7 @@ main:
         call flicker
         call move_player
         call light_torch
+        halt
         call check_all_torches_lit
         halt
         call fire_evaporate
