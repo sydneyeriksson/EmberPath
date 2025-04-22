@@ -9,6 +9,7 @@ include "src/utils.inc"
 include "src/wram.inc"
 include "src/graphics.inc"
 include "src/sprites.inc"
+include "src/timer.inc"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -122,7 +123,7 @@ load_game_won:
 ; sets z flag if player is hiding
 check_end_screen:
     ld a, c
-    cp a, 4
+    cp a, GAME_OVER
     ret
 
 ; Check if A is pressed after player has died
@@ -134,7 +135,7 @@ check_A_pressed:
     jr nz, .done
         ; if player is offscreen (dead), restart the game
         call check_end_screen
-        jr z, .done
+        jr nz, .done
         
         DisableLCD
         call init_graphics
@@ -153,19 +154,9 @@ check_A_pressed:
     .done
     ret
 
-count_down:
-    dec d
-    jr nz, .done
-        dec b
-        ld d, 10
-        jr nz, .done
-            call game_over
-    .done
-    ret
-
 ; loads the game over screen and hides the player
 game_over:
-    ld c, 4
+    ld c, GAME_OVER
     DisableLCD
     call load_game_over
     InitOAM
@@ -175,12 +166,10 @@ game_over:
 
 ; loads the game won screen and hides the player
 game_won:
-    ld c, 4
-   ;DisableLCD
+    ld c, GAME_OVER
     call load_game_won
     InitOAM
     Copy [PLAYER_SPRITE + OAMA_X], PLAYER_HIDE_X
-    ;EnableLCD
     ret
     
 

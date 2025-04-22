@@ -9,6 +9,7 @@ include "src/hardware.inc"
 include "src/joypad.inc"
 include "src/graphics.inc"
 include "src/sprites.inc"
+include "src/timer.inc"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -43,17 +44,16 @@ main:
     call init_level_1_torches
     call init_waters
     call init_timer
-    ld c, 1
     EnableLCD
     
     ; init e as a jump counter
     ld e, 0
 
     ; init d as a second timer
-    ; 60 halts = 1 second
-    ; 5 halts in a loop
-    ; 12 decrements of d = 1 second
-    ld d, 12
+    ld d, LOOPS_PER_SECOND
+
+    ; init c as the game level counter
+    ld c, 1
 
     ; currently has 6 halts in a loop
     .game_loop
@@ -72,5 +72,4 @@ main:
         call update_timer
         halt
         call enter_door
-        ;call count_down
         jr .game_loop

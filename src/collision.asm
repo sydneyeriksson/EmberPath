@@ -12,6 +12,10 @@ include "src/sprites.inc"
 include "src/collision_tiles.inc"
 
 def LADDER_TILE_ID   equ 188
+def SPRITE_HEIGHT    equ 16
+def SPRITE_WIDTH     equ 8
+def TILE_MAP_START   equ $9800
+def ROM_START        equ $0000
 
 section "collision", rom0
 
@@ -63,7 +67,7 @@ macro FindOverlappingTileID
     ld b, 0
     add hl, bc
     
-    ld bc, $9800
+    ld bc, TILE_MAP_START
     add hl, bc
 
     ld a, [hl]   
@@ -76,7 +80,7 @@ macro CheckIfCollision
     push bc
     push hl
     ; put the index we want to check in ROM into hl
-    ld hl, $0000
+    ld hl, ROM_START
     ld a, \1
     ld b, a
     srl a
@@ -117,13 +121,13 @@ global_coordinates:
     ; Find global x coordinate
     ld a, [rWX]
     add a, b
-    sub a, 8
+    sub a, SPRITE_WIDTH
     ld b, a
 
     ; find global y coordinate
     ld a, [rWX]
     add a, c
-    sub a, 16
+    sub a, SPRITE_HEIGHT
     ld c, a
     ret
 

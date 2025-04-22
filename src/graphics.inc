@@ -29,6 +29,7 @@ endm
 
 ; load the graphics data from ROM to VRAM
 macro LoadGraphicsDataIntoVRAM
+    push de
     ld de, GRAPHICS_DATA_ADDRESS_START
     ld hl, _VRAM8000
     .load_tile\@
@@ -38,9 +39,14 @@ macro LoadGraphicsDataIntoVRAM
         ld a, d
         cp a, high(GRAPHICS_DATA_ADDRESS_END)
         jr nz, .load_tile\@
+    pop de
 endm
 
+; Load the new map into VRAM
+; \1 is the start of the new map
+; \2 is the end of the new map
 macro LoadNewMapDataIntoVRAM
+    push de
     ld de, \1
     ld hl, $9800
     ; move hl to the tilemap portion of VRAM
@@ -51,10 +57,13 @@ macro LoadNewMapDataIntoVRAM
         ld a, d
         cp a, high(\2)
         jr nz, .load_tile\@
+    pop de
 endm
 
 ; clear the OAM
 macro InitOAM
+    push bc
+    push de
     ld c, OAM_COUNT
     ld hl, _OAMRAM + OAMA_Y
     ld de, sizeof_OAM_ATTRS
@@ -63,6 +72,8 @@ macro InitOAM
         add hl, de
         dec c
         jr nz, .init_oam\@
+    pop de
+    pop bc
 endm
 
 endc

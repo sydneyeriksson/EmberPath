@@ -32,8 +32,8 @@ def SMALL_SPIKE_3       equ _OAMRAM + 18*sizeof_OAM_ATTRS
 def MINUTE_TIMER        equ _OAMRAM + 19*sizeof_OAM_ATTRS
 def COLON               equ _OAMRAM + 20*sizeof_OAM_ATTRS
 
-def PLAYER_HIDE_X       equ 180
-def PLAYER_HIDE_Y       equ 253
+def PLAYER_HIDE_X       equ 250
+def PLAYER_HIDE_Y       equ 250
 def FLOATING_OFFSET     equ 4
 
 ; make macro to check if sprites are colliding 

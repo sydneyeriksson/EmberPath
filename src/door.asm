@@ -11,6 +11,7 @@ include "src/sprites.inc"
 include "src/hardware.inc"
 include "src/joypad.inc"
 include "src/graphics.inc"
+include "src/timer.inc"
 
 def LEFT_DOOR_START_X   equ 16
 def LEFT_DOOR_START_Y   equ 16
@@ -30,6 +31,7 @@ def SWITCH_DOOR_TILE_ID equ 4
 section "door", rom0
 
 ; Switch the state of one half of the door (open or closed)
+; \1 if the door sprite ID
 macro ChangeDoor
     push af
     ld a, [\1 + OAMA_TILEID]
@@ -102,7 +104,7 @@ enter_door:
         ; Make next level appear
         DisableLCD
         ld a, c
-        cp a, 1
+        cp a, LEVEL_1
         jr nz, .not_on_first
         call load_level_2
         call init_player
@@ -115,7 +117,7 @@ enter_door:
 
         .not_on_first
         ld a, c
-        cp a, 2
+        cp a, LEVEL_2
         jr nz, .not_on_second
         call load_level_3
         call init_player
@@ -129,7 +131,6 @@ enter_door:
 
         .not_on_second
         call game_won
-        ld c, 1
 
         .done
         EnableLCD

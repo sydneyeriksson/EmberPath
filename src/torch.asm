@@ -89,6 +89,7 @@ init_level_3_torches:
     ret
  
 ; makes the torch flicker
+; \1 is the torch sprite ID
 macro TorchFlicker
     push af
     ld a, [\1 + OAMA_TILEID]

@@ -1,13 +1,14 @@
 ;
 ; CS-240 World 7: Feature Complete
 ;
-; @file graphics.inc
+; @file timer.asm
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 21, 2025
 
 include "src/utils.inc"
 include "src/wram.inc"
 include "src/sprites.inc"
+include "src/timer.inc"
 
 def START_NUMBER_TILE_ID    equ 65
 def END_NUMBER_TILE_ID      equ 83
@@ -20,18 +21,6 @@ def COLON_TIMER_X           equ 24
 def TENS_TIMER_X            equ 32
 def ONES_TIMER_X            equ 40
 def TIMER_Y                 equ 136
-
-; \1 is number of seconds
-; returns the ones number in a
-macro FindOnesNumber
-    ld a, \1
-    .check_under_ten\@
-    cp a, 10
-    jr c, .done\@
-        sub a, 10
-        jr .check_under_ten\@
-    .done\@
-endm
 
 macro DecreaseOnesNumber
     Copy a, [\1 + OAMA_TILEID]  
@@ -116,7 +105,7 @@ update_timer:
                 call decrease_tens_number
             .decrease_ones
             DecreaseOnesNumber ONES_TIMER
-            ld d, 12
+            ld d, LOOPS_PER_SECOND
         .done
         CheckOutOfTime
         jr nz, .not_out_of_time
