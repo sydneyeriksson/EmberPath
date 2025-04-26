@@ -10,14 +10,17 @@ include "src/wram.inc"
 include "src/sprites.inc"
 
 def PLAYER_START_X           equ 32
-def PLAYER_START_Y           equ 16
+def PLAYER_START_Y           equ 15
 def FIRE_UPRIGHT_TILEID      equ 0
 def FIRE_BALL                equ 24
 def FIRE_MOVING_SIDEWAYS     equ 6
 def OAMA_NO_FLAGS            equ 0
 def SPRITE_MOVING_DOWN       equ 9
-def SPRITE_DONE_JUMPING      equ 16
+def SPRITE_JUMP_UP           equ 4
+def SPRITE_DONE_JUMPING      equ 24
 def END_FLICKER_TILE_ID      equ 6
+def SPRITE_HOVER             equ 10
+def NO_JUMP                  equ 251
 
 
 section "fire", rom0
@@ -28,6 +31,7 @@ macro MoveRight
     ld a, [PLAYER_SPRITE + OAMA_X]
     inc a
     inc a
+    inc a
     ld [PLAYER_SPRITE + OAMA_X], a
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_SIDEWAYS
@@ -36,12 +40,13 @@ macro MoveRight
     Copy b, [PLAYER_SPRITE + OAMA_X]
     Copy c, [PLAYER_SPRITE + OAMA_Y]
     ld a, c
-    add a, FIRE_MOVING_SIDEWAYS
+    add a, SPRITE_MOVING_DOWN
     ld c, a
     call can_player_move_here
     jr z, .done\@
         ; undo the movement
         ld a, [PLAYER_SPRITE + OAMA_X]
+        dec a
         dec a
         dec a
         ld [PLAYER_SPRITE + OAMA_X], a
@@ -56,6 +61,7 @@ macro MoveLeft
     ld a, [PLAYER_SPRITE + OAMA_X]
     dec a
     dec a
+    dec a
     ld [PLAYER_SPRITE + OAMA_X], a
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_XFLIP | OAMF_PAL1
     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_SIDEWAYS
@@ -68,12 +74,13 @@ macro MoveLeft
     ld b, a
     Copy c, [PLAYER_SPRITE + OAMA_Y]
     ld a, c
-    add a, FIRE_MOVING_SIDEWAYS
+    add a, SPRITE_MOVING_DOWN
     ld c, a
     call can_player_move_here
     jr z, .done\@
         ; undo the movement
         ld a, [PLAYER_SPRITE + OAMA_X]
+        inc a
         inc a
         inc a
         ld [PLAYER_SPRITE + OAMA_X], a
@@ -93,12 +100,19 @@ macro Gravity
     ld c, a
     Copy b, [PLAYER_SPRITE + OAMA_X]
     ld a, b
-    sub a, FLOATING_OFFSET
+    sub a, 5
+    ld b, a
+    call can_player_move_here
+    jr nz, .reset\@
+
+    Copy b, [PLAYER_SPRITE + OAMA_X]
+    ld a, b
+    sub a, 2
     ld b, a
     call can_player_move_here
     jr z, .done\@
 
-    ; .reset\@
+    .reset\@
     ld a, [PLAYER_SPRITE + OAMA_Y]
     dec a
     ld [PLAYER_SPRITE + OAMA_Y], a
@@ -124,18 +138,11 @@ jump_possible:
     ld a, b
     sub a, FLOATING_OFFSET
     ld b, a
-
     call can_player_move_here
     ; if on solid ground (collision detected), start a jump
     jr z, .no_start_jump
-        ld e, 1
-
+        ld e, SPRITE_JUMP_UP
     .no_start_jump
-    ld a, e
-    cp a, 0
-    jr z, .no_jump
-        call jump
-    .no_jump
 
     ; reset sprite from previous check for solid ground
     ld a, [PLAYER_SPRITE + OAMA_Y]
@@ -152,50 +159,117 @@ init_player:
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
     ret
 
+macro JumpSprite
+    push bc
+    ld a, \1
+    ld b, a
+    ld a, [PLAYER_SPRITE + OAMA_Y]
+    sub a, b
+    ld [PLAYER_SPRITE + OAMA_Y], a
+    pop bc
+
+endm
+
+macro ReverseJumpSprite
+    push bc
+    ld a, \1
+    ld b, a
+    ld a, [PLAYER_SPRITE + OAMA_Y]
+    add a, b
+    ld [PLAYER_SPRITE + OAMA_Y], a
+    pop bc
+
+endm
 ; make the sprite jump, returns a counter in "e" 
 ;       which stores what part of the jump the sprite is in
 jump:
     push af
     push bc
-    ld a, e
-    cp a, SPRITE_MOVING_DOWN
-    jr nc, .down
-        Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
-        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
-
-        ; move sprite up
-        ld a, [PLAYER_SPRITE + OAMA_Y]
-        dec a
-        dec a
-        ld [PLAYER_SPRITE + OAMA_Y], a
-        inc e
-        jr .done
-
-    .down
-    ; let sprite fall down with gravity
     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_YFLIP | OAMF_PAL1
-    ; increment the jump counter "e"
-    inc e
-
-    ; Check if the sprite is done jumping
     ld a, e
-    cp a, SPRITE_DONE_JUMPING
-    jr c, .done
-        ; Reset the flame to be in normal upright mode
-        Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_UPRIGHT_TILEID
+    cp a, NO_JUMP
+    jr c, .skip_y_flip
         Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
-        ld e, 0
+    .skip_y_flip
+    JumpSprite e
+
+    ; check if player can move here, if not, reverse movement
+    Copy a, [PLAYER_SPRITE + OAMA_Y]
+    add a, SPRITE_MOVING_DOWN
+    ld c, a
+    Copy a, [PLAYER_SPRITE + OAMA_X]
+    sub a, 5
+    ld b, a
+    call can_player_move_here
+    jr z, .done
+        ; undo movement and end jump
+        ReverseJumpSprite e
+        ld e, NO_JUMP
+        inc e
     .done
-    pop af
+    ; ld a, e
+    ; cp a, 0
+    ; jr c, .sprite_jump_down
+    ;     JumpSprite e
+    ;     jr .done
+    ; .sprite_jump_down
+    ; JumpSprite e
+    ; .done
+    dec e
+
+    ;     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
+    ;     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
+
+    ;     ; move sprite up
+    ;     ld a, [PLAYER_SPRITE + OAMA_Y]
+    ;     dec a
+    ;     dec a
+    ;     ld [PLAYER_SPRITE + OAMA_Y], a
+    ;     inc e
+    ;     jr .done
+
+    ; .hover
+    ; ld a, e
+    ; cp a, SPRITE_DONE_HOVER
+    ; jr nc, .down
+    ;     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
+    ;     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
+
+    ;     ; hover sprite
+    ;     ld a, [PLAYER_SPRITE + OAMA_Y]
+    ;     dec a
+    ;     ld [PLAYER_SPRITE + OAMA_Y], a
+    ;     inc e
+    ;     jr .done
+
+    ; .down
+    ; ; let sprite fall down with gravity
+    ; Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
+    ; Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_YFLIP | OAMF_PAL1
+    ; ; increment the jump counter "e"
+    ; inc e
+
+    ; ; Check if the sprite is done jumping
+    ; ld a, e
+    ; cp a, SPRITE_DONE_JUMPING
+    ; jr c, .done
+    ;     ; Reset the flame to be in normal upright mode
+    ;     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_UPRIGHT_TILEID
+    ;     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
+    ;     ld e, 0
+    ; .done
     pop bc
+    pop af
     ret
 
 climb_ladder: 
     push af
     push bc
     ; get player location
-    Copy c, [PLAYER_SPRITE + OAMA_Y]
+    ld a, [PLAYER_SPRITE + OAMA_Y]
+    add a, FLOATING_OFFSET
+    ld c, a
     ld a, [PLAYER_SPRITE + OAMA_X]
     sub a, FLOATING_OFFSET
     ld b, a
@@ -262,15 +336,25 @@ move_player:
         MoveLeft
     .done_moving_left
     pop af
-
-    ; If a held, jump
     push af
+    ; continue existing jump
+    ld a, e
+    cp a, NO_JUMP
+    jr z, .no_jump_in_progress
+        call jump
+        jr .no_start_jump
+    .no_jump_in_progress
+    ; If a held, jump
+    ld a, [PAD_CURR]
     bit PADB_A, a
     jr nz, .no_jump
         call jump_possible
-
     .no_jump
+    Gravity
+    .no_start_jump
+
     pop af
+
 
     ; If up held, climb ladder
     push af
@@ -278,8 +362,6 @@ move_player:
     jr nz, .no_climb
         call climb_ladder     
     .no_climb
-
-    Gravity
 
     .done
     pop af

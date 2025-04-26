@@ -47,7 +47,7 @@ main:
     EnableLCD
     
     ; init e as a jump counter
-    ld e, 0
+    ld e, 250
 
     ; init d as a second timer
     ld d, LOOPS_PER_SECOND
