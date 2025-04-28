@@ -16,11 +16,11 @@ def FIRE_BALL                equ 24
 def FIRE_MOVING_SIDEWAYS     equ 6
 def OAMA_NO_FLAGS            equ 0
 def SPRITE_MOVING_DOWN       equ 9
-def SPRITE_JUMP_UP           equ 3
+def SPRITE_JUMP_UP           equ 6
 def SPRITE_DONE_JUMPING      equ 24
 def END_FLICKER_TILE_ID      equ 6
 def SPRITE_HOVER             equ 10
-def NO_JUMP                  equ 252
+def NO_JUMP                  equ 249
 
 
 section "fire", rom0
@@ -162,6 +162,7 @@ init_player:
 macro JumpSprite
     push bc
     ld a, \1
+    sra a
     ld b, a
     ld a, [PLAYER_SPRITE + OAMA_Y]
     sub a, b
@@ -173,6 +174,7 @@ endm
 macro ReverseJumpSprite
     push bc
     ld a, \1
+    sra a
     ld b, a
     ld a, [PLAYER_SPRITE + OAMA_Y]
     add a, b
