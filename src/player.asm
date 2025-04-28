@@ -16,11 +16,11 @@ def FIRE_BALL                equ 24
 def FIRE_MOVING_SIDEWAYS     equ 6
 def OAMA_NO_FLAGS            equ 0
 def SPRITE_MOVING_DOWN       equ 9
-def SPRITE_JUMP_UP           equ 4
+def SPRITE_JUMP_UP           equ 3
 def SPRITE_DONE_JUMPING      equ 24
 def END_FLICKER_TILE_ID      equ 6
 def SPRITE_HOVER             equ 10
-def NO_JUMP                  equ 251
+def NO_JUMP                  equ 252
 
 
 section "fire", rom0
@@ -29,7 +29,6 @@ macro MoveRight
     push bc
     ; move the player right
     ld a, [PLAYER_SPRITE + OAMA_X]
-    inc a
     inc a
     inc a
     ld [PLAYER_SPRITE + OAMA_X], a
@@ -48,7 +47,6 @@ macro MoveRight
         ld a, [PLAYER_SPRITE + OAMA_X]
         dec a
         dec a
-        dec a
         ld [PLAYER_SPRITE + OAMA_X], a
         Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
     .done\@
@@ -59,7 +57,6 @@ macro MoveLeft
     push bc
     ; Move the player left
     ld a, [PLAYER_SPRITE + OAMA_X]
-    dec a
     dec a
     dec a
     ld [PLAYER_SPRITE + OAMA_X], a
@@ -80,7 +77,6 @@ macro MoveLeft
     jr z, .done\@
         ; undo the movement
         ld a, [PLAYER_SPRITE + OAMA_X]
-        inc a
         inc a
         inc a
         ld [PLAYER_SPRITE + OAMA_X], a
@@ -110,12 +106,16 @@ macro Gravity
     sub a, 2
     ld b, a
     call can_player_move_here
-    jr z, .done\@
+    jr z, .make_fire_ball\@
 
     .reset\@
     ld a, [PLAYER_SPRITE + OAMA_Y]
     dec a
     ld [PLAYER_SPRITE + OAMA_Y], a
+    jr .done\@
+
+    .make_fire_ball\@
+    Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
 
     .done\@
     pop bc
