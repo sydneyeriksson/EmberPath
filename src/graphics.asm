@@ -148,6 +148,7 @@ check_A_pressed:
         call init_door
         call init_level_1_torches
         call init_waters
+        call init_spikes_1
         call init_timer
         ld c, 1
         EnableLCD

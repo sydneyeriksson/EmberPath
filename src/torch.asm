@@ -9,7 +9,7 @@ include "src/utils.inc"
 include "src/wram.inc"
 include "src/sprites.inc"
 
-def UNLIT_TORCH_TILE_ID          equ 50
+def UNLIT_TORCH_TILE_ID          equ 52
 def START_TORCH_FLICKER_TILE_ID  equ 52
 def END_TORCH_FLICKER_TILE_ID    equ 60
 def OAMA_NO_FLAGS                equ 0
@@ -66,6 +66,59 @@ macro AddToHL
     adc a, 0
     ld h, a
 endm
+
+load_torch_data_into_WRAM:
+    ; Level 1 torches
+    Copy [LEVEL_1_TORCHES + TORCH_X], TORCH_1_START_X
+    Copy [LEVEL_1_TORCHES + TORCH_Y], TORCH_1_START_Y
+    Copy [LEVEL_1_TORCHES + TORCH_ID], UNLIT_TORCH_TILE_ID
+
+    Copy [LEVEL_1_TORCHES + sizeof_TORCH_ATTRS + TORCH_X], TORCH_2_START_X
+    Copy [LEVEL_1_TORCHES + sizeof_TORCH_ATTRS + TORCH_Y], TORCH_2_START_Y
+    Copy [LEVEL_1_TORCHES + sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
+
+    Copy [LEVEL_1_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_X], TORCH_3_START_X
+    Copy [LEVEL_1_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_Y], TORCH_3_START_Y
+    Copy [LEVEL_1_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
+
+    Copy [LEVEL_1_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_X], TORCH_3_START_X
+    Copy [LEVEL_1_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_Y], TORCH_3_START_Y
+    Copy [LEVEL_1_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
+
+    ; Level 2 torches
+    Copy [LEVEL_2_TORCHES + TORCH_X], TORCH_1_START_X_L2
+    Copy [LEVEL_2_TORCHES + TORCH_Y], TORCH_1_START_Y_L2
+    Copy [LEVEL_2_TORCHES + TORCH_ID], UNLIT_TORCH_TILE_ID
+
+    Copy [LEVEL_2_TORCHES + sizeof_TORCH_ATTRS + TORCH_X], TORCH_2_START_X_L2
+    Copy [LEVEL_2_TORCHES + sizeof_TORCH_ATTRS + TORCH_Y], TORCH_2_START_Y_L2
+    Copy [LEVEL_2_TORCHES + sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
+
+    Copy [LEVEL_2_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_X], TORCH_3_START_X_L2
+    Copy [LEVEL_2_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_Y], TORCH_3_START_Y_L2
+    Copy [LEVEL_2_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
+
+    Copy [LEVEL_2_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_X], TORCH_3_START_X_L2
+    Copy [LEVEL_2_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_Y], TORCH_3_START_Y_L2
+    Copy [LEVEL_2_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
+
+    ; Level 3 torches
+    Copy [LEVEL_3_TORCHES + TORCH_X], TORCH_1_START_X_L3
+    Copy [LEVEL_3_TORCHES + TORCH_Y], TORCH_1_START_Y_L3
+    Copy [LEVEL_3_TORCHES + TORCH_ID], UNLIT_TORCH_TILE_ID
+
+    Copy [LEVEL_3_TORCHES + sizeof_TORCH_ATTRS + TORCH_X], TORCH_2_START_X_L3
+    Copy [LEVEL_3_TORCHES + sizeof_TORCH_ATTRS + TORCH_Y], TORCH_2_START_Y_L3
+    Copy [LEVEL_3_TORCHES + sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
+
+    Copy [LEVEL_3_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_X], TORCH_3_START_X_L3
+    Copy [LEVEL_3_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_Y], TORCH_3_START_Y_L3
+    Copy [LEVEL_3_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
+
+    Copy [LEVEL_3_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_X], TORCH_3_START_X_L3
+    Copy [LEVEL_3_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_Y], TORCH_3_START_Y_L3
+    Copy [LEVEL_3_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
+    ret
 
 init_level_1_torches:
     InitSprite TORCH_1, TORCH_1_START_X, TORCH_1_START_Y, UNLIT_TORCH_TILE_ID
@@ -209,4 +262,4 @@ check_all_torches_lit:
     
     ret
     
-export init_level_1_torches, init_level_2_torches, init_level_3_torches, light_torch, check_all_torches_lit, flicker_torches
+export init_level_1_torches, init_level_2_torches, init_level_3_torches, light_torch, check_all_torches_lit, flicker_torches, load_torch_data_into_WRAM

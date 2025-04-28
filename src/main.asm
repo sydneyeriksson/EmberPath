@@ -25,6 +25,7 @@ section "main", rom0[$0155]
 main:
     DisableLCD
     call init_graphics
+    call load_torch_data_into_WRAM
     EnableLCD
     InitJoypad
 
@@ -43,11 +44,12 @@ main:
     call init_door
     call init_level_1_torches
     call init_waters
+    call init_spikes_1
     call init_timer
     EnableLCD
     
     ; init e as a jump counter
-    ld e, 250
+    ld e, NO_JUMP
 
     ; init d as a second timer
     ld d, LOOPS_PER_SECOND

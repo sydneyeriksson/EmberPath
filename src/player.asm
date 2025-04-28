@@ -20,7 +20,6 @@ def SPRITE_JUMP_UP           equ 6
 def SPRITE_DONE_JUMPING      equ 24
 def END_FLICKER_TILE_ID      equ 6
 def SPRITE_HOVER             equ 10
-def NO_JUMP                  equ 249
 
 
 section "fire", rom0

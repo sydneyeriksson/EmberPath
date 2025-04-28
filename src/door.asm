@@ -106,20 +106,21 @@ enter_door:
         ld a, c
         cp a, LEVEL_1
         jr nz, .not_on_first
-        call load_level_2
+/*        call load_level_2
         call init_player
         call init_door
         call init_level_2_torches
         call init_waters_2
         call init_timer
         inc c
+*/       call first_to_second
         jr .done
 
         .not_on_first
         ld a, c
         cp a, LEVEL_2
         jr nz, .not_on_second
-        call load_level_3
+/*       call load_level_3
         call init_player
         call init_door
         call init_level_3_torches
@@ -127,6 +128,7 @@ enter_door:
         call init_spikes_3
         call init_timer
         inc c
+*/       call second_to_third
         jr .done
 
         .not_on_second
@@ -137,5 +139,33 @@ enter_door:
 
     .dont_enter
     ret
+
+first_to_second:
+    call load_level_2
+    call init_player
+    call init_door
+    call init_level_2_torches
+    call init_waters_2
+    call init_spikes_2
+    call init_timer
+    inc c
+    ret
+
+second_to_third:
+    call load_level_3
+    call init_player
+    call init_door
+    call init_level_3_torches
+    call init_waters_3
+    call init_spikes_3
+    call init_timer
+    inc c
+    ret
+
+/* UpdateFuncTable:
+dw first_to_second
+dw second_to_third
+dw game_won
+*/
 
 export init_door, open_and_close_door, open_door, enter_door
