@@ -52,6 +52,7 @@ endm
 
 
 macro CallHL
+    push de
     ld de, .call_return_address\@
     push de
     jp hl
@@ -60,6 +61,7 @@ macro CallHL
 endm
 
 UpdateFuncTable:
+    dw first_level
     dw first_to_second
     dw second_to_third
     dw game_won
@@ -118,8 +120,9 @@ enter_door:
     jr nz, .dont_enter
 
         ; Make next level appear
+        ;halt
         DisableLCD
-       /* halt
+;/*     
         ld a, c
         ld d, 0
         ld e, a
@@ -130,8 +133,9 @@ enter_door:
         ld a, [hli]
         ld h, [hl]
         ld l, a
-        CallHL*/
-
+        CallHL
+;*/
+/*
         ld a, c
         cp a, LEVEL_1
         jr nz, .not_on_first
@@ -147,7 +151,7 @@ enter_door:
 
         .not_on_second
         call game_won
-
+*/
         .done
         EnableLCD
 
@@ -186,33 +190,5 @@ second_to_third:
     call init_timer
     inc c
     ret
-
-/* 
-macro CallHL
-    ld de, .call_return_address\@
-    push de
-    jp hl
-    .call_return_address\@
-endm
-
-UpdateFuncTable:
-dw first_to_second
-dw second_to_third
-dw game_won
-
-update_level:
-    halt
-    ld a, [c]
-    ld d, 0
-    ld e, a
-    ld hl, UpdateFuncTable
-    add hl, de
-    add hl, de
-
-    ld a, [hli]
-    ld h, [hl]
-    ld l, a
-    CallHL
-*/
 
 export init_door, open_and_close_door, open_door, enter_door
