@@ -17,11 +17,11 @@ torch_light_sound:
     ret
 
 door_open_sound:
-    Copy [rNR10], $6D;17
-    Copy [rNR11], $00;80
-    Copy [rNR12], $F1;F0
-    Copy [rNR13], $72;89
-    Copy [rNR14], $C6;C5
+    Copy [rNR10], $5B;17
+    Copy [rNR11], $11;80
+    Copy [rNR12], $F9;F0
+    Copy [rNR13], $13;89
+    Copy [rNR14], $C7;C5
     ret
 
 player_death_sound:

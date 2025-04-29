@@ -13,6 +13,8 @@ include "src/joypad.inc"
 include "src/graphics.inc"
 include "src/timer.inc"
 
+def WRAM_FUNC_INDEX     equ 1
+
 def LEFT_DOOR_START_X   equ 16
 def LEFT_DOOR_START_Y   equ 16
 def LEFT_DOOR_TILE_ID   equ 42
@@ -106,29 +108,14 @@ enter_door:
         ld a, c
         cp a, LEVEL_1
         jr nz, .not_on_first
-/*        call load_level_2
-        call init_player
-        call init_door
-        call init_level_2_torches
-        call init_waters_2
-        call init_timer
-        inc c
-*/       call first_to_second
+        call first_to_second
         jr .done
 
         .not_on_first
         ld a, c
         cp a, LEVEL_2
         jr nz, .not_on_second
-/*       call load_level_3
-        call init_player
-        call init_door
-        call init_level_3_torches
-        call init_waters_3
-        call init_spikes_3
-        call init_timer
-        inc c
-*/       call second_to_third
+        call second_to_third
         jr .done
 
         .not_on_second
@@ -162,10 +149,32 @@ second_to_third:
     inc c
     ret
 
-/* UpdateFuncTable:
+/* 
+macro CallHL
+    ld de, .call_return_address\@
+    push de
+    jp hl
+    .call_return_address\@
+endm
+
+UpdateFuncTable:
 dw first_to_second
 dw second_to_third
 dw game_won
+
+update_level:
+    halt
+    ld a, [c]
+    ld d, 0
+    ld e, a
+    ld hl, UpdateFuncTable
+    add hl, de
+    add hl, de
+
+    ld a, [hli]
+    ld h, [hl]
+    ld l, a
+    CallHL
 */
 
 export init_door, open_and_close_door, open_door, enter_door
