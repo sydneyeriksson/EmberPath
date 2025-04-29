@@ -104,6 +104,10 @@ move_window_offscreen_no_start:
     pop af
     ret
         
+load_level_1:
+    LoadNewMapDataIntoVRAM GRAPHICS_DATA_ADDRESS_END, TILEMAP_LEVEL_2_START
+    ret
+
 load_level_2:
     LoadNewMapDataIntoVRAM TILEMAP_LEVEL_2_START, TILEMAP_LEVEL_3_START
     ret
@@ -147,7 +151,7 @@ check_A_pressed:
         call init_player
         call init_door
         call init_level_1_torches
-        call init_waters
+        call init_waters_1
         call init_spikes_1
         call init_timer
         ld c, 1
@@ -174,7 +178,7 @@ game_won:
     ret
     
 
-export move_window_offscreen, load_level_2, load_game_over, check_A_pressed, game_over, count_down, load_level_3, game_won, init_graphics
+export move_window_offscreen, load_level_1, load_level_2, load_game_over, check_A_pressed, game_over, count_down, load_level_3, game_won, init_graphics
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

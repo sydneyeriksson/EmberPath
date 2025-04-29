@@ -43,7 +43,7 @@ main:
     call init_player
     call init_door
     call init_level_1_torches
-    call init_waters
+    call init_waters_1
     call init_spikes_1
     call init_timer
     EnableLCD

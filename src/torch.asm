@@ -9,7 +9,7 @@ include "src/utils.inc"
 include "src/wram.inc"
 include "src/sprites.inc"
 
-def UNLIT_TORCH_TILE_ID          equ 50
+def UNLIT_TORCH_TILE_ID          equ 52
 def START_TORCH_FLICKER_TILE_ID  equ 52
 def END_TORCH_FLICKER_TILE_ID    equ 60
 def OAMA_NO_FLAGS                equ 0

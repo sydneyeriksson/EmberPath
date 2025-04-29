@@ -91,7 +91,7 @@ def SMALL_SPIKE_3_L3_Y   equ 112
 
 section "water", rom0
 
-init_waters:
+init_waters_1:
     InitSprite WATER_1, WATER_1_L1_X, WATER_L1_Y, WATER_ID
     InitSprite WATER_2, WATER_2_L1_X, WATER_L1_Y, WATER_ID
     InitSprite WATER_3, WATER_3_L1_X, WATER_L1_Y, WATER_ID

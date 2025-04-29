@@ -50,6 +50,20 @@ macro ChangeDoor
     pop af
 endm
 
+
+macro CallHL
+    ld de, .call_return_address\@
+    push de
+    jp hl
+    .call_return_address\@
+    pop de
+endm
+
+UpdateFuncTable:
+    dw first_to_second
+    dw second_to_third
+    dw game_won
+
 init_door:
     ; Init left side of door
     Copy [LEFT_DOOR + OAMA_X], LEFT_DOOR_START_X
@@ -105,6 +119,19 @@ enter_door:
 
         ; Make next level appear
         DisableLCD
+       /* halt
+        ld a, c
+        ld d, 0
+        ld e, a
+        ld hl, UpdateFuncTable
+        add hl, de
+        add hl, de
+    
+        ld a, [hli]
+        ld h, [hl]
+        ld l, a
+        CallHL*/
+
         ld a, c
         cp a, LEVEL_1
         jr nz, .not_on_first
@@ -125,6 +152,17 @@ enter_door:
         EnableLCD
 
     .dont_enter
+    ret
+
+first_level:
+    call load_level_1
+    call init_player
+    call init_door
+    call init_level_1_torches
+    call init_waters_1
+    call init_spikes_1
+    call init_timer
+    inc c
     ret
 
 first_to_second:
