@@ -115,6 +115,29 @@ init_waters_3:
     InitSprite WATER_5, WATER_5_L3_X, WATER_L3_Y, WATER_ID
     ret
 
+/* macro WaterMove
+    push af
+    ld a, [\1 + OAMA_TILEID]
+    cp a, UNLIT_TORCH_TILE_ID
+    jr z, .done\@
+        ; change between the flickering tileIDs
+        inc a
+        cp a, END_TORCH_FLICKER_TILE_ID
+        jr c, .skip_reset\@
+            ld a, START_TORCH_FLICKER_TILE_ID
+        .skip_reset\@
+        Copy [\1 + OAMA_TILEID], a
+    .done\@
+    pop af
+    endm 
+
+move_water:
+    TorchFlicker TORCH_1
+    TorchFlicker TORCH_2
+    TorchFlicker TORCH_3
+    TorchFlicker TORCH_4
+    ret */
+
 init_spikes_1:
     InitSprite LARGE_SPIKE_1, LARGE_SPIKE_1_L1_X, LARGE_SPIKE_1_L1_Y, LARGE_SPIKE_ID
     InitSprite LARGE_SPIKE_2, LARGE_SPIKE_2_L1_X, LARGE_SPIKE_2_L1_Y, LARGE_SPIKE_ID

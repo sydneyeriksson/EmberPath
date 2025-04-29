@@ -179,8 +179,8 @@ macro ReverseJumpSprite
     add a, b
     ld [PLAYER_SPRITE + OAMA_Y], a
     pop bc
-
 endm
+
 ; make the sprite jump, returns a counter in "e" 
 ;       which stores what part of the jump the sprite is in
 jump:
