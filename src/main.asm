@@ -62,6 +62,7 @@ main:
         halt
         UpdateJoypad
         call flicker
+        call move_water
         call move_player
         call light_torch
         halt

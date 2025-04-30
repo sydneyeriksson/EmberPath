@@ -120,6 +120,29 @@ macro Gravity
     pop bc
 endm
 
+macro JumpSprite
+    push bc
+    ld a, \1
+    sra a
+    ld b, a
+    ld a, [PLAYER_SPRITE + OAMA_Y]
+    sub a, b
+    ld [PLAYER_SPRITE + OAMA_Y], a
+    pop bc
+
+endm
+
+macro ReverseJumpSprite
+    push bc
+    ld a, \1
+    sra a
+    ld b, a
+    ld a, [PLAYER_SPRITE + OAMA_Y]
+    add a, b
+    ld [PLAYER_SPRITE + OAMA_Y], a
+    pop bc
+endm
+
 ; uses counter "e" which stores 
 ;       what part of the jump the sprite is in
 jump_possible:
@@ -157,29 +180,6 @@ init_player:
     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_UPRIGHT_TILEID
     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
     ret
-
-macro JumpSprite
-    push bc
-    ld a, \1
-    sra a
-    ld b, a
-    ld a, [PLAYER_SPRITE + OAMA_Y]
-    sub a, b
-    ld [PLAYER_SPRITE + OAMA_Y], a
-    pop bc
-
-endm
-
-macro ReverseJumpSprite
-    push bc
-    ld a, \1
-    sra a
-    ld b, a
-    ld a, [PLAYER_SPRITE + OAMA_Y]
-    add a, b
-    ld [PLAYER_SPRITE + OAMA_Y], a
-    pop bc
-endm
 
 ; make the sprite jump, returns a counter in "e" 
 ;       which stores what part of the jump the sprite is in
