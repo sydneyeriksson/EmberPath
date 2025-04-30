@@ -16,7 +16,7 @@ def FIRE_BALL                equ 24
 def FIRE_MOVING_SIDEWAYS     equ 6
 def OAMA_NO_FLAGS            equ 0
 def SPRITE_MOVING_DOWN       equ 9
-def SPRITE_JUMP_UP           equ 6
+def SPRITE_JUMP_UP           equ 10
 def SPRITE_DONE_JUMPING      equ 24
 def END_FLICKER_TILE_ID      equ 6
 def SPRITE_HOVER             equ 10
@@ -27,27 +27,27 @@ section "fire", rom0
 macro MoveRight
     push bc
     ; move the player right
-    ld a, [PLAYER_SPRITE + OAMA_X]
+    ld a, [WRAM_PLAYER + SPRITE_X]
     inc a
     inc a
-    ld [PLAYER_SPRITE + OAMA_X], a
-    Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
-    Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_MOVING_SIDEWAYS
+    ld [WRAM_PLAYER + SPRITE_X], a
+    Copy [WRAM_PLAYER + FLAGS], OAMF_PAL1
+    Copy [WRAM_PLAYER + TILE_ID], FIRE_MOVING_SIDEWAYS
 
     ; Checks if player can move there, undoes movement if not
-    Copy b, [PLAYER_SPRITE + OAMA_X]
-    Copy c, [PLAYER_SPRITE + OAMA_Y]
+    Copy b, [WRAM_PLAYER + SPRITE_X]
+    Copy c, [WRAM_PLAYER + SPRITE_Y]
     ld a, c
     add a, SPRITE_MOVING_DOWN
     ld c, a
     call can_player_move_here
     jr z, .done\@
         ; undo the movement
-        ld a, [PLAYER_SPRITE + OAMA_X]
+        ld a, [WRAM_PLAYER + SPRITE_X]
         dec a
         dec a
-        ld [PLAYER_SPRITE + OAMA_X], a
-        Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
+        ld [WRAM_PLAYER + SPRITE_X], a
+        Copy [WRAM_PLAYER + FLAGS], OAMF_PAL1
     .done\@
     pop bc
 endm
@@ -124,6 +124,7 @@ macro JumpSprite
     push bc
     ld a, \1
     sra a
+    sra a
     ld b, a
     ld a, [PLAYER_SPRITE + OAMA_Y]
     sub a, b
@@ -135,6 +136,7 @@ endm
 macro ReverseJumpSprite
     push bc
     ld a, \1
+    sra a
     sra a
     ld b, a
     ld a, [PLAYER_SPRITE + OAMA_Y]
@@ -175,10 +177,9 @@ jump_possible:
     ret
 
 init_player:
-    Copy [PLAYER_SPRITE + OAMA_X], PLAYER_START_X
-    Copy [PLAYER_SPRITE + OAMA_Y], PLAYER_START_Y
-    Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_UPRIGHT_TILEID
-    Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
+    InitSprite PLAYER_SPRITE, PLAYER_START_X, PLAYER_START_Y, FIRE_UPRIGHT_TILEID, OAMF_PAL1
+
+    InitSpriteWram WRAM_PLAYER, 0, PLAYER_START_X, PLAYER_START_Y, FIRE_UPRIGHT_TILEID, OAMF_PAL1
     ret
 
 ; make the sprite jump, returns a counter in "e" 
@@ -209,57 +210,8 @@ jump:
         ld e, NO_JUMP
         inc e
     .done
-    ; ld a, e
-    ; cp a, 0
-    ; jr c, .sprite_jump_down
-    ;     JumpSprite e
-    ;     jr .done
-    ; .sprite_jump_down
-    ; JumpSprite e
-    ; .done
     dec e
 
-    ;     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
-    ;     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
-
-    ;     ; move sprite up
-    ;     ld a, [PLAYER_SPRITE + OAMA_Y]
-    ;     dec a
-    ;     dec a
-    ;     ld [PLAYER_SPRITE + OAMA_Y], a
-    ;     inc e
-    ;     jr .done
-
-    ; .hover
-    ; ld a, e
-    ; cp a, SPRITE_DONE_HOVER
-    ; jr nc, .down
-    ;     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
-    ;     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
-
-    ;     ; hover sprite
-    ;     ld a, [PLAYER_SPRITE + OAMA_Y]
-    ;     dec a
-    ;     ld [PLAYER_SPRITE + OAMA_Y], a
-    ;     inc e
-    ;     jr .done
-
-    ; .down
-    ; ; let sprite fall down with gravity
-    ; Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_BALL
-    ; Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_YFLIP | OAMF_PAL1
-    ; ; increment the jump counter "e"
-    ; inc e
-
-    ; ; Check if the sprite is done jumping
-    ; ld a, e
-    ; cp a, SPRITE_DONE_JUMPING
-    ; jr c, .done
-    ;     ; Reset the flame to be in normal upright mode
-    ;     Copy [PLAYER_SPRITE + OAMA_TILEID], FIRE_UPRIGHT_TILEID
-    ;     Copy [PLAYER_SPRITE + OAMA_FLAGS], OAMF_PAL1
-    ;     ld e, 0
-    ; .done
     pop bc
     pop af
     ret
@@ -282,6 +234,7 @@ climb_ladder:
 
         ; move sprite up
         ld a, [PLAYER_SPRITE + OAMA_Y]
+        dec a
         dec a
         dec a
         ld [PLAYER_SPRITE + OAMA_Y], a
@@ -351,6 +304,7 @@ move_player:
     jr nz, .no_jump
         call jump_possible
     .no_jump
+    Gravity
     Gravity
     .no_start_jump
 

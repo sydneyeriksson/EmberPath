@@ -25,7 +25,6 @@ section "main", rom0[$0155]
 main:
     DisableLCD
     call init_graphics
-    call load_torch_data_into_WRAM
     EnableLCD
     InitJoypad
 

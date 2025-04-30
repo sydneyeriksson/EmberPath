@@ -67,18 +67,13 @@ UpdateFuncTable:
     dw game_won
 
 init_door:
-    ; Init left side of door
-    Copy [LEFT_DOOR + OAMA_X], LEFT_DOOR_START_X
-    Copy [LEFT_DOOR + OAMA_Y], LEFT_DOOR_START_Y
-    Copy [LEFT_DOOR + OAMA_TILEID], LEFT_DOOR_TILE_ID
-    Copy [LEFT_DOOR + OAMA_FLAGS], OAMF_PAL1
+   ; Init left side of door
+   InitSprite LEFT_DOOR, LEFT_DOOR_START_X, LEFT_DOOR_START_Y, LEFT_DOOR_TILE_ID, OAMF_PAL1
 
-    ; Init right side of door
-    Copy [RIGHT_DOOR + OAMA_X], RIGHT_DOOR_START_X
-    Copy [RIGHT_DOOR + OAMA_Y], RIGHT_DOOR_START_Y
-    Copy [RIGHT_DOOR + OAMA_TILEID], RIGHT_DOOR_TILE_ID
-    Copy [RIGHT_DOOR + OAMA_FLAGS], OAMF_PAL1
-    ret
+
+   ; Init right side of door
+   InitSprite RIGHT_DOOR, RIGHT_DOOR_START_X, RIGHT_DOOR_START_Y, RIGHT_DOOR_TILE_ID, OAMF_PAL1
+   ret
 
 ; Change the left and right door tile IDs so the door appears open
 open_door:
@@ -135,6 +130,7 @@ enter_door:
 
         .done
         EnableLCD
+        call next_level_sound
 
     .dont_enter
     ret

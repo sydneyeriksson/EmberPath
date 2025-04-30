@@ -9,6 +9,7 @@ if !def(SPRITES_RGBINC)
 def SPRITES_RGBINC equ 1
 
 include "src/utils.inc" 
+include "src/wram.inc" 
 
 def PLAYER_SPRITE       equ _OAMRAM
 def LEFT_DOOR           equ _OAMRAM + sizeof_OAM_ATTRS
@@ -32,10 +33,16 @@ def SMALL_SPIKE_3       equ _OAMRAM + 18*sizeof_OAM_ATTRS
 def MINUTE_TIMER        equ _OAMRAM + 19*sizeof_OAM_ATTRS
 def COLON               equ _OAMRAM + 20*sizeof_OAM_ATTRS
 
+def WRAM_PLAYER_SPRITE  equ WRAM_PLAYER
+def WRAM_TORCH_1        equ WRAM_TORCH + 0*sizeof_SPRITE_ATTRS
+def WRAM_TORCH_2        equ WRAM_TORCH + 1*sizeof_SPRITE_ATTRS
+def WRAM_TORCH_3        equ WRAM_TORCH + 2*sizeof_SPRITE_ATTRS
+def WRAM_TORCH_4        equ WRAM_TORCH + 3*sizeof_SPRITE_ATTRS
+
 def PLAYER_HIDE_X       equ 250
 def PLAYER_HIDE_Y       equ 250
 def FLOATING_OFFSET     equ 4
-def NO_JUMP             equ 249
+def NO_JUMP             equ 0
 
 ; make macro to check if sprites are colliding 
 ; \1 is  x_coordinate for the first sprite
@@ -87,6 +94,18 @@ macro InitSprite
     Copy [\1 + OAMA_Y], \3
     Copy [\1 + OAMA_TILEID], \4
     Copy [\1 + OAMA_FLAGS], OAMF_PAL1
+endm
+
+; \1 is the sprite
+; \2 is the sprite start x
+; \3 is the sprite start y
+; \4 is the sprite tile ID
+; \5 is the sprite flags
+macro InitSpriteWram
+    Copy [\1 + SPRITE_X], \2
+    Copy [\1 + SPRITE_Y], \3
+    Copy [\1 + TILE_ID], \4
+    Copy [\1 + FLAGS], \5
 endm
 
 endc

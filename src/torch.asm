@@ -67,64 +67,16 @@ macro AddToHL
     ld h, a
 endm
 
-load_torch_data_into_WRAM:
-    ; Level 1 torches
-    Copy [LEVEL_1_TORCHES + TORCH_X], TORCH_1_START_X
-    Copy [LEVEL_1_TORCHES + TORCH_Y], TORCH_1_START_Y
-    Copy [LEVEL_1_TORCHES + TORCH_ID], UNLIT_TORCH_TILE_ID
-
-    Copy [LEVEL_1_TORCHES + sizeof_TORCH_ATTRS + TORCH_X], TORCH_2_START_X
-    Copy [LEVEL_1_TORCHES + sizeof_TORCH_ATTRS + TORCH_Y], TORCH_2_START_Y
-    Copy [LEVEL_1_TORCHES + sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
-
-    Copy [LEVEL_1_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_X], TORCH_3_START_X
-    Copy [LEVEL_1_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_Y], TORCH_3_START_Y
-    Copy [LEVEL_1_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
-
-    Copy [LEVEL_1_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_X], TORCH_3_START_X
-    Copy [LEVEL_1_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_Y], TORCH_3_START_Y
-    Copy [LEVEL_1_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
-
-    ; Level 2 torches
-    Copy [LEVEL_2_TORCHES + TORCH_X], TORCH_1_START_X_L2
-    Copy [LEVEL_2_TORCHES + TORCH_Y], TORCH_1_START_Y_L2
-    Copy [LEVEL_2_TORCHES + TORCH_ID], UNLIT_TORCH_TILE_ID
-
-    Copy [LEVEL_2_TORCHES + sizeof_TORCH_ATTRS + TORCH_X], TORCH_2_START_X_L2
-    Copy [LEVEL_2_TORCHES + sizeof_TORCH_ATTRS + TORCH_Y], TORCH_2_START_Y_L2
-    Copy [LEVEL_2_TORCHES + sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
-
-    Copy [LEVEL_2_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_X], TORCH_3_START_X_L2
-    Copy [LEVEL_2_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_Y], TORCH_3_START_Y_L2
-    Copy [LEVEL_2_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
-
-    Copy [LEVEL_2_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_X], TORCH_3_START_X_L2
-    Copy [LEVEL_2_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_Y], TORCH_3_START_Y_L2
-    Copy [LEVEL_2_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
-
-    ; Level 3 torches
-    Copy [LEVEL_3_TORCHES + TORCH_X], TORCH_1_START_X_L3
-    Copy [LEVEL_3_TORCHES + TORCH_Y], TORCH_1_START_Y_L3
-    Copy [LEVEL_3_TORCHES + TORCH_ID], UNLIT_TORCH_TILE_ID
-
-    Copy [LEVEL_3_TORCHES + sizeof_TORCH_ATTRS + TORCH_X], TORCH_2_START_X_L3
-    Copy [LEVEL_3_TORCHES + sizeof_TORCH_ATTRS + TORCH_Y], TORCH_2_START_Y_L3
-    Copy [LEVEL_3_TORCHES + sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
-
-    Copy [LEVEL_3_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_X], TORCH_3_START_X_L3
-    Copy [LEVEL_3_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_Y], TORCH_3_START_Y_L3
-    Copy [LEVEL_3_TORCHES + 2*sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
-
-    Copy [LEVEL_3_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_X], TORCH_3_START_X_L3
-    Copy [LEVEL_3_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_Y], TORCH_3_START_Y_L3
-    Copy [LEVEL_3_TORCHES + 3*sizeof_TORCH_ATTRS + TORCH_ID], UNLIT_TORCH_TILE_ID
-    ret
-
 init_level_1_torches:
     InitSprite TORCH_1, TORCH_1_START_X, TORCH_1_START_Y, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_2, TORCH_2_START_X, TORCH_2_START_Y, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_3, TORCH_3_START_X, TORCH_3_START_Y, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_4, TORCH_4_START_X, TORCH_4_START_Y, UNLIT_TORCH_TILE_ID
+
+    InitSpriteWram WRAM_TORCH_1, TORCH_1_START_X, TORCH_1_START_Y, UNLIT_TORCH_TILE_ID, OAMF_PAL1
+    InitSpriteWram WRAM_TORCH_2, TORCH_2_START_X, TORCH_2_START_Y, UNLIT_TORCH_TILE_ID, OAMF_PAL1
+    InitSpriteWram WRAM_TORCH_3, TORCH_3_START_X, TORCH_3_START_Y, UNLIT_TORCH_TILE_ID, OAMF_PAL1
+    InitSpriteWram WRAM_TORCH_4, TORCH_4_START_X, TORCH_4_START_Y, UNLIT_TORCH_TILE_ID, OAMF_PAL1
     ret
 
 init_level_2_torches:
@@ -132,6 +84,11 @@ init_level_2_torches:
     InitSprite TORCH_2, TORCH_2_START_X_L2, TORCH_2_START_Y_L2, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_3, TORCH_3_START_X_L2, TORCH_3_START_Y_L2, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_4, TORCH_4_START_X_L2, TORCH_4_START_Y_L2, UNLIT_TORCH_TILE_ID
+
+    InitSpriteWram WRAM_TORCH_1, TORCH_1_START_X_L2, TORCH_1_START_Y_L2, UNLIT_TORCH_TILE_ID, OAMF_PAL1
+    InitSpriteWram WRAM_TORCH_2, TORCH_2_START_X_L2, TORCH_2_START_Y_L2, UNLIT_TORCH_TILE_ID, OAMF_PAL1
+    InitSpriteWram WRAM_TORCH_3, TORCH_3_START_X_L2, TORCH_3_START_Y_L2, UNLIT_TORCH_TILE_ID, OAMF_PAL1
+    InitSpriteWram WRAM_TORCH_4, TORCH_4_START_X_L2, TORCH_4_START_Y_L2, UNLIT_TORCH_TILE_ID, OAMF_PAL1
     ret
 
 init_level_3_torches:
@@ -139,13 +96,18 @@ init_level_3_torches:
     InitSprite TORCH_2, TORCH_2_START_X_L3, TORCH_2_START_Y_L3, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_3, TORCH_3_START_X_L3, TORCH_3_START_Y_L3, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_4, TORCH_4_START_X_L3, TORCH_4_START_Y_L3, UNLIT_TORCH_TILE_ID
+
+    InitSpriteWram WRAM_TORCH_1, TORCH_1_START_X_L3, TORCH_1_START_Y_L3, UNLIT_TORCH_TILE_ID, OAMF_PAL1
+    InitSpriteWram WRAM_TORCH_2, TORCH_2_START_X_L3, TORCH_2_START_Y_L3, UNLIT_TORCH_TILE_ID, OAMF_PAL1
+    InitSpriteWram WRAM_TORCH_3, TORCH_3_START_X_L3, TORCH_3_START_Y_L3, UNLIT_TORCH_TILE_ID, OAMF_PAL1
+    InitSpriteWram WRAM_TORCH_4, TORCH_4_START_X_L3, TORCH_4_START_Y_L3, UNLIT_TORCH_TILE_ID, OAMF_PAL1
     ret
  
 ; makes the torch flicker
 ; \1 is the torch sprite ID
 macro TorchFlicker
     push af
-    ld a, [\1 + OAMA_TILEID]
+    ld a, [\1 + TILE_ID]
     cp a, UNLIT_TORCH_TILE_ID
     jr z, .done\@
         ; change between the flickering tileIDs
@@ -160,10 +122,10 @@ macro TorchFlicker
     endm 
 
 flicker_torches:
-    TorchFlicker TORCH_1
-    TorchFlicker TORCH_2
-    TorchFlicker TORCH_3
-    TorchFlicker TORCH_4
+    TorchFlicker WRAM_TORCH_1
+    TorchFlicker WRAM_TORCH_2
+    TorchFlicker WRAM_TORCH_3
+    TorchFlicker WRAM_TORCH_4
     ret
 
 ; check all torches (sprites after the doors but before the water?)
@@ -173,43 +135,43 @@ light_possible:
     push bc
     push de
     ; Get player location
-    ld a, [PLAYER_SPRITE + OAMA_X]
+    ld a, [WRAM_PLAYER + SPRITE_X]
     add a, 4
     ld b, a
-    ld a, [PLAYER_SPRITE + OAMA_Y]
+    ld a, [WRAM_PLAYER + SPRITE_Y]
     add a, FLOATING_OFFSET
     ld c, a
 
     ; Check each torch to see if overlapping
-    Copy d, [TORCH_1 + OAMA_X]
-    Copy e, [TORCH_1 + OAMA_Y]
+    Copy d, [WRAM_TORCH_1 + SPRITE_X]
+    Copy e, [WRAM_TORCH_1 + SPRITE_Y]
     FindOverlappingSprite b, c, d, e
     jp nz, .torch_2
-        ld hl, TORCH_1
+        ld hl, WRAM_TORCH_1
         jp .done
 
     .torch_2
-    Copy d, [TORCH_2 + OAMA_X]
-    Copy e, [TORCH_2 + OAMA_Y]
+    Copy d, [WRAM_TORCH_2 + SPRITE_X]
+    Copy e, [WRAM_TORCH_2 + SPRITE_Y]
     FindOverlappingSprite b, c, d, e
     jp nz, .torch_3
-        ld hl, TORCH_2
+        ld hl, WRAM_TORCH_2
         jp .done
 
     .torch_3
-    Copy d, [TORCH_3 + OAMA_X]
-    Copy e, [TORCH_3 + OAMA_Y]
+    Copy d, [WRAM_TORCH_3 + SPRITE_X]
+    Copy e, [WRAM_TORCH_3 + SPRITE_Y]
     FindOverlappingSprite b, c, d, e
     jp nz, .torch_4
-        ld hl, TORCH_3
+        ld hl, WRAM_TORCH_3
         jp .done
 
     .torch_4
-    Copy d, [TORCH_4 + OAMA_X]
-    Copy e, [TORCH_4 + OAMA_Y]
+    Copy d, [WRAM_TORCH_3 + SPRITE_X]
+    Copy e, [WRAM_TORCH_3 + SPRITE_Y]
     FindOverlappingSprite b, c, d, e
     jr nz, .done
-        ld hl, TORCH_4
+        ld hl, WRAM_TORCH_3
 
     .done
     pop de
@@ -229,7 +191,7 @@ light_torch:
         call light_possible
         jr nz, .dont_light
             call torch_light_sound
-            AddToHL OAMA_TILEID
+            AddToHL TILE_ID
             Copy [hl], START_TORCH_FLICKER_TILE_ID
 
     .dont_light

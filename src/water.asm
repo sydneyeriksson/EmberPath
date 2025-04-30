@@ -118,6 +118,7 @@ init_waters_3:
 ;/*
 macro WaterMove
     push af
+    push de
     ld a, d
     cp a, 1
     jr z, .done\@
@@ -132,18 +133,8 @@ macro WaterMove
             .skip_reset\@
             Copy [\1 + OAMA_TILEID], a
     .done\@
+    pop de
     pop af 
-/*     push af
-    Copy a, [\1 + OAMA_FLAGS]
-    cp a, OAMF_XFLIP
-    jr nz, .flip_now  
-        Copy [\1 + OAMA_FLAGS], OAMF_PAL1
-        jr .done
-    .flip_now
-    Copy [\1 + OAMA_FLAGS], OAMF_XFLIP | OAMF_PAL1
-
-    .done
-    pop af */
     endm 
 
 move_water:
