@@ -183,7 +183,7 @@ export move_window_offscreen, load_level_1, load_level_2, load_game_over, check_
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 section "graphics_data", rom0[GRAPHICS_DATA_ADDRESS_START]
-incbin "assets/tileset_2_waters.chr"
+incbin "assets/tileset_waters.chr"
 incbin "assets/level_1.tlm"
 incbin "assets/correct_window.tlm"
 incbin "assets/level_2.tlm"

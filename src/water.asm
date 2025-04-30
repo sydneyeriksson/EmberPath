@@ -13,8 +13,8 @@ include "src/joypad.inc"
 include "src/graphics.inc"
 
 ; water
-def WATER_ID               equ 61
-def END_WATER_TILE_ID      equ 63
+def WATER_ID               equ 86
+def END_WATER_TILE_ID      equ 100
 
 def WATER_L1_Y     equ 120
 def WATER_1_L1_X   equ 80
@@ -120,18 +120,18 @@ macro WaterMove
     push af
     ld a, d
     cp a, 1
-    jr nz, .done
+    jr z, .done\@
         ld a, [\1 + OAMA_TILEID]
         cp a, END_WATER_TILE_ID
-        jr nc, .done
+        jr nc, .done\@
             ; change between the flickering tileIDs
             inc a
             cp a, END_WATER_TILE_ID
-            jr c, .skip_reset
+            jr c, .skip_reset\@
                 ld a, WATER_ID
-            .skip_reset
+            .skip_reset\@
             Copy [\1 + OAMA_TILEID], a
-    .done
+    .done\@
     pop af 
 /*     push af
     Copy a, [\1 + OAMA_FLAGS]
@@ -148,10 +148,10 @@ macro WaterMove
 
 move_water:
     WaterMove WATER_1
-/*     WaterMove WATER_2
+    WaterMove WATER_2
     WaterMove WATER_3
     WaterMove WATER_4
-    WaterMove WATER_5  */
+    WaterMove WATER_5 
     ret
 ;*/
 init_spikes_1:
