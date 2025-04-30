@@ -60,9 +60,13 @@ main:
     ; currently has 6 halts in a loop
     .game_loop
         halt
-        UpdateJoypad
         call flicker
+        halt
         call move_water
+        call flicker_torches
+        call update_timer
+        halt
+        UpdateJoypad
         call move_player
         call light_torch
         halt
@@ -71,9 +75,6 @@ main:
         call fire_evaporate
         halt
         call check_A_pressed
-        halt
-        call flicker_torches
-        call update_timer
         halt
         call enter_door
         jr .game_loop

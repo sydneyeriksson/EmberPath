@@ -120,9 +120,7 @@ enter_door:
     jr nz, .dont_enter
 
         ; Make next level appear
-        ;halt
-        DisableLCD
-;/*     
+        DisableLCD   
         ld a, c
         ld d, 0
         ld e, a
@@ -134,24 +132,7 @@ enter_door:
         ld h, [hl]
         ld l, a
         CallHL
-;*/
-/*
-        ld a, c
-        cp a, LEVEL_1
-        jr nz, .not_on_first
-        call first_to_second
-        jr .done
 
-        .not_on_first
-        ld a, c
-        cp a, LEVEL_2
-        jr nz, .not_on_second
-        call second_to_third
-        jr .done
-
-        .not_on_second
-        call game_won
-*/
         .done
         EnableLCD
 
