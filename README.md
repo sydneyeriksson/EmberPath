@@ -1,6 +1,6 @@
 # CS 240 Ember Path
 
-Long ago there was an charming castle in the Swiss Alps. The king who lived there was very lonely as a result of living on top of a mountain, so he had a great fireplace built and welcomed travelers of all kinds to stay in his castle. These travelers would play music, feast on hot cocoa and cheese, and warm up by the fire. Years past, and eventually the king fell ill and died. Now, the castle sits abandoned, but legend says there is a single ember that remains from the fireplace. It stays in the castle, lighting the way for lost spirits and weary travelers ...
+Long ago there was an beautiful castle in the Swiss Alps. But as he lived on the top of a secluded mountain, the king who lived there was very lonely, and decided to build a great fireplace to welcome travelers of all kinds and invite them to stay in his castle. These travelers filled the castle with light and life, playing music, feasting on hot cocoa and cheese, and warming themselves by the fire. But as the years past, the king eventually fell ill and died. The castle now sits, dark and abandoned. But legend says that there remains a single ember from that brilliant blazing fireplace. It flickers determinedly in the castle, keeping the torches lit and lighting the way for any lost spirit or weary traveler who might seek a guiding light...
 
 <img width="917" alt="Screenshot 2025-04-30 at 9 04 27 PM" src="https://github.com/user-attachments/assets/25c337af-757f-48ef-b6da-7cbc72ed8dbc" />
 
