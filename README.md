@@ -7,8 +7,12 @@ Long ago there was an charming castle in the Swiss Alps. The king who lived ther
 ## How to run the game:
 
 Ember Path is a game designed to be played on a Game Boy. It can be played on a computer through the use of an emulator such as [Emulicious](https://emulicious.net/).
-1. Clone this repository and then run:
+1. Clone this repository and make the file:
    ```
+   # Clone the repository
+   git clone https://github.com/cs240-spring2025/game-asher-and-sydney.git
+
+   # Make the file
    make
    ```
    This will create a file titled "game.gb". 
@@ -41,6 +45,7 @@ Ember Path is a game designed to be played on a Game Boy. It can be played on a 
 
    <img height="100" alt="Screenshot 2025-04-30 at 9 26 54 PM" src="https://github.com/user-attachments/assets/7441c3e5-29d9-4c4b-9f02-9c3d7f671e01" /> <img height="100" alt="Screenshot 2025-04-30 at 9 26 37 PM" src="https://github.com/user-attachments/assets/229ca18a-2eb0-4030-bb23-c2a3bbfdba73" />
 
+- Get to the door before the timer runs out!
 - Get through all rooms to win
 - Press A to restart the game when the game is over
 
