@@ -279,6 +279,16 @@ move_player:
     ; get the joypad buttons that are being held!
     ld a, [PAD_CURR]
 
+    ; If up held, climb ladder
+    push af
+    bit PADB_UP, a
+    jr nz, .no_climb
+        call climb_ladder     
+    .no_climb
+
+    .done
+    pop af
+
     ; If right held, move right
     push af
     bit PADB_RIGHT, a
@@ -295,8 +305,9 @@ move_player:
         MoveLeft
     .done_moving_left
     pop af
-    push af
+
     ; continue existing jump
+    push af
     ld a, e
     cp a, NO_JUMP
     jr z, .no_jump_in_progress
@@ -312,18 +323,6 @@ move_player:
     Gravity
     Gravity
     .no_start_jump
-
-    pop af
-
-
-    ; If up held, climb ladder
-    push af
-    bit PADB_UP, a
-    jr nz, .no_climb
-        call climb_ladder     
-    .no_climb
-
-    .done
     pop af
     ret
 
