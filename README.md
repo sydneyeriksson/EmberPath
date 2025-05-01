@@ -17,7 +17,7 @@ Ember Path is a game designed to be played on a Game Boy. It can be played on a 
    ```
    This will create a file titled "game.gb". 
 
-2. Run Emulicious
+2. Download and run Emulicious
 3. Drag and drop the game.gb file into the Emulicious window.
 
 ## Game Play:
