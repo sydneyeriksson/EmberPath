@@ -4,6 +4,8 @@
 ; @file level_3.asm
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 30, 2025
+; @brief functions to initialize level 3
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
 
 include "src/sprites.inc"
 include "src/timer.inc"

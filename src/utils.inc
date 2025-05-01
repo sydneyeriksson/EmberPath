@@ -4,6 +4,8 @@
 ; @file utils.inc
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 30, 2025
+; @brief utility macros
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
 
 if !def(UTILS_RGBINC)
 def UTILS_RGBINC equ 1

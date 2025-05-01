@@ -4,6 +4,8 @@
 ; @file sprites.inc
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 30, 2025
+; @brief macros to control sprites
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
 
 if !def(SPRITES_RGBINC)
 def SPRITES_RGBINC equ 1
@@ -51,6 +53,8 @@ def END_WATER_TILE_ID   equ 100
 def LARGE_SPIKE_ID      equ 15
 def SMALL_SPIKE_ID      equ 13
 def OFF_SCREEN          equ 0
+
+def LEFT_DOOR_OPEN_ID   equ 46
 
 def UNLIT_TORCH_TILE_ID          equ 50
 def START_TORCH_FLICKER_TILE_ID  equ 52

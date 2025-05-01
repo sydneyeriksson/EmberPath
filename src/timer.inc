@@ -4,6 +4,8 @@
 ; @file timer.inc
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 30, 2025
+; @brief math to determine game levels and loops per second
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
 
 def HALTS_PER_SECOND        equ 60
 def HALTS_IN_MAIN_LOOP      equ 4

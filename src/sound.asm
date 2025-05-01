@@ -4,6 +4,9 @@
 ; @file sound.asm
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 30, 2025
+; @brief sound functions for various sounds
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
+
 include "src/utils.inc"
 
 section "sound", rom0

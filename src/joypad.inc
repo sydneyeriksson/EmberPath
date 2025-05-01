@@ -4,6 +4,7 @@
 ; @file joypad.inc
 ; @author Darren Strash and CS 240
 ; @brief macros to initialize and update the state of the joypad
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
 
 if !def(JOYPAD_RGBINC)
 def JOYPAD_RGBINC equ 1

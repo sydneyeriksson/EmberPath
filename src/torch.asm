@@ -4,12 +4,12 @@
 ; @file torch.asm
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 30, 2025
+; @brief macros and functions to control the torch sprites
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
 
 include "src/utils.inc"
 include "src/wram.inc"
 include "src/sprites.inc"
-
-def LEFT_DOOR_OPEN_ID            equ 46
 
 section "torch", rom0
 

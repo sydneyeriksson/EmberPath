@@ -4,6 +4,8 @@
 ; @file collision.asm
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 30, 2025
+; @brief macros and functions to detect collisions
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
 
 include "src/hardware.inc"
 include "src/joypad.inc"

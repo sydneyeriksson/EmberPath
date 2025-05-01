@@ -4,6 +4,8 @@
 ; @file main.asm
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 30, 2025
+; @brief the main loop for the game
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
 
 include "src/hardware.inc"
 include "src/joypad.inc"

@@ -4,6 +4,8 @@
 ; @file collision_tiles.inc
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 30, 2025
+; @brief loads a map of tiles that cause collisions into the ROM
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
 
 if !def(COLLISION_TILES_RGBINC)
 def COLLISION_TILES_RGBINC equ 1

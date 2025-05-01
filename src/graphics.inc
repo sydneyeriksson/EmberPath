@@ -4,6 +4,8 @@
 ; @file graphics.inc
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 30, 2025
+; @brief macros to help with graphics
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
 
 if !def(GRAPHICS_RGBINC)
 def GRAPHICS_RGBINC equ 1

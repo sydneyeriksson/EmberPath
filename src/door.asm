@@ -4,6 +4,8 @@
 ; @file door.asm
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 30, 2025
+; @brief macros and functions to control the door sprites
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
 
 include "src/utils.inc"
 include "src/wram.inc"
@@ -18,7 +20,6 @@ def WRAM_FUNC_INDEX     equ 1
 def LEFT_DOOR_START_X   equ 16
 def LEFT_DOOR_START_Y   equ 16
 def LEFT_DOOR_TILE_ID   equ 42
-def LEFT_DOOR_OPEN_ID   equ 46
 
 def RIGHT_DOOR_START_X  equ 24
 def RIGHT_DOOR_START_Y  equ 16

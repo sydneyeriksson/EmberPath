@@ -4,6 +4,8 @@
 ; @file graphics.asm
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 30, 2025
+; @brief macros and functions to change tilemaps and window
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
 
 include "src/utils.inc"
 include "src/wram.inc"
@@ -200,14 +202,6 @@ check_A_pressed:
 
         DisableLCD
         call first_level
-        ; call init_player
-        ; call load_player_into_WRAM
-        ; call init_door
-        ; call init_level_1_torches
-        ; call load_torches_into_WRAM
-        ; call init_waters_1
-        ; call init_spikes_1
-        ; call init_timer
         call load_player_into_WRAM
         call load_torches_into_WRAM
         ld c, 1

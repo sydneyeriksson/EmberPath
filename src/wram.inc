@@ -4,6 +4,8 @@
 ; @file wram.inc
 ; @authors Asher Kaplan and Sydney Eriksson
 ; @date April 30, 2025
+; @brief offsets for button and sprite attributes
+; @license Copyright 2025 Asher Kaplan and Sydney Eriksson
 
 include "src/hardware.inc"
 
