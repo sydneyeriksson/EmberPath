@@ -2,8 +2,8 @@
 
 all: game.gb
 
-game.gb: build/main.o build/graphics.o build/player.o build/door.o build/collision.o build/torch.o build/water.o build/sound.o build/timer.o
-	rgblink --dmg --map game.map --sym game.sym -o game.gb build/main.o build/graphics.o build/player.o build/door.o build/collision.o build/torch.o build/water.o build/sound.o build/timer.o
+game.gb: build/main.o build/graphics.o build/player.o build/door.o build/collision.o build/torch.o build/water.o build/sound.o build/timer.o build/level_1.o build/level_2.o build/level_3.o
+	rgblink --dmg --map game.map --sym game.sym -o game.gb build/main.o build/graphics.o build/player.o build/door.o build/collision.o build/torch.o build/water.o build/sound.o build/timer.o build/level_1.o build/level_2.o build/level_3.o
 	rgbfix -v -p 0xFF game.gb
 
 build/main.o: src/main.asm src/*.inc build
@@ -32,6 +32,15 @@ build/sound.o: src/sound.asm src/*.inc assets/*.tlm assets/*.chr build
 
 build/timer.o: src/timer.asm src/*.inc assets/*.tlm assets/*.chr build
 	rgbasm -o build/timer.o src/timer.asm
+
+build/level_1.o: src/level_1.asm src/*.inc assets/*.tlm assets/*.chr build
+	rgbasm -o build/level_1.o src/level_1.asm
+
+build/level_2.o: src/level_2.asm src/*.inc assets/*.tlm assets/*.chr build
+	rgbasm -o build/level_2.o src/level_2.asm
+
+build/level_3.o: src/level_3.asm src/*.inc assets/*.tlm assets/*.chr build
+	rgbasm -o build/level_3.o src/level_3.asm
 
 
 build:

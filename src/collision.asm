@@ -19,6 +19,13 @@ def ROM_START        equ $0000
 
 section "collision", rom0
 
+
+macro TimesTwoForTileID
+    sla a
+    sla l
+    adc a
+endm
+
 ; \1 is global x_coordinate
 ; \2 is global y_coordinate
 ; returns tile ID in a
@@ -27,28 +34,15 @@ macro FindOverlappingTileID
     ; calculate what tile the sprite is on
     ; find y vertical row (divide y pixel height by 8)
     ld a, \2
-    srl a
-    srl a
-    srl a
+    DivideBy8
 
     ; multiply y * 32
     ld l, a
     ld a, 0
-    sla a
-    sla l
-    adc a
-    ; * 2
-    sla a
-    sla l
-    adc a
-    ; * 4
-    sla a
-    sla l
-    adc a
-    ; * 8
-    sla a
-    sla l
-    adc a
+    TimesTwoForTileID
+    TimesTwoForTileID
+    TimesTwoForTileID
+    TimesTwoForTileID
     ; * 16
     sla a
     sla l
@@ -58,9 +52,7 @@ macro FindOverlappingTileID
 
     ; x
     ld a, \1
-    srl a
-    srl a
-    srl a
+    DivideBy8
     ld c, a
     
     ; add (y * 32) + x
@@ -83,16 +75,11 @@ macro CheckIfCollision
     ld hl, ROM_START
     ld a, \1
     ld b, a
-    srl a
-    srl a
-    srl a
-    add a, l
+    DivideBy8
     ld l, a
 
     ; put the bit we want to check in b
-    sla a
-    sla a
-    sla a
+    MultiplyBy8
     ld c, a
     ld a, b
     sub a, c

@@ -39,12 +39,13 @@ main:
         jr z, .start_loop
 
     DisableLCD
-    call init_player
-    call init_door
-    call init_level_1_torches
-    call init_waters_1
-    call init_spikes_1
-    call init_timer
+    call first_level
+    ; call init_player
+    ; call init_door
+    ; call init_level_1_torches
+    ; call init_waters_1
+    ; call init_spikes_1
+    ; call init_timer
     EnableLCD
     
     ; init e as a jump counter

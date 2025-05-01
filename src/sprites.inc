@@ -10,6 +10,7 @@ def SPRITES_RGBINC equ 1
 
 include "src/utils.inc" 
 include "src/wram.inc" 
+include "src/graphics.inc"
 
 def PLAYER_SPRITE       equ _OAMRAM
 def LEFT_DOOR           equ _OAMRAM + sizeof_OAM_ATTRS
@@ -44,6 +45,18 @@ def PLAYER_HIDE_Y       equ 250
 def FLOATING_OFFSET     equ 4
 def NO_JUMP             equ 0
 
+def WATER_ID            equ 86
+def END_WATER_TILE_ID   equ 100
+
+def LARGE_SPIKE_ID      equ 15
+def SMALL_SPIKE_ID      equ 13
+def OFF_SCREEN          equ 0
+
+def UNLIT_TORCH_TILE_ID          equ 50
+def START_TORCH_FLICKER_TILE_ID  equ 52
+def END_TORCH_FLICKER_TILE_ID    equ 60
+def OAMA_NO_FLAGS                equ 0
+
 ; make macro to check if sprites are colliding 
 ; \1 is  x_coordinate for the first sprite
 ; \2 is  y_coordinate for the first sprite
@@ -55,30 +68,22 @@ macro FindOverlappingSprite
     ; calculate what sprite the player_sprite is on
     ; find y vertical row (divide y pixel height by 8)
     ld a, \2
-    srl a
-    srl a
-    srl a
+    DivideBy8
     ld h, a
 
     ld a, \4
-    srl a
-    srl a
-    srl a
+    DivideBy8
 
     cp a, h
     jr nz, .not_overlapping\@
 
     ; find x horizontal col (divide y pixel height by 8)
     ld a, \1
-    srl a
-    srl a
-    srl a
+    DivideBy8
     ld c, a
 
     ld a, \3
-    srl a
-    srl a
-    srl a
+    DivideBy8
     
     cp a, c
     .not_overlapping\@

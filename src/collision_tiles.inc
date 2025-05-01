@@ -8,7 +8,7 @@
 if !def(COLLISION_TILES_RGBINC)
 def COLLISION_TILES_RGBINC equ 1
 
-section "collision tiles", rom0
+section "collision tiles", rom0[0]
 
 ; sprites do not cause collisions
 db %00000000

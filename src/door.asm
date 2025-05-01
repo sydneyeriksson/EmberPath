@@ -19,7 +19,6 @@ def LEFT_DOOR_START_X   equ 16
 def LEFT_DOOR_START_Y   equ 16
 def LEFT_DOOR_TILE_ID   equ 42
 def LEFT_DOOR_OPEN_ID   equ 46
-def OAMA_NO_FLAGS       equ 0
 
 def RIGHT_DOOR_START_X  equ 24
 def RIGHT_DOOR_START_Y  equ 16
@@ -59,7 +58,7 @@ macro CallHL
 endm
 
 UpdateFuncTable:
-    dw first_level
+    dw load_first_level
     dw first_to_second
     dw second_to_third
     dw game_won
@@ -133,39 +132,6 @@ enter_door:
 
     .dont_enter
     pop de
-    ret
-
-first_level:
-    call load_level_1
-    call init_player
-    call init_door
-    call init_level_1_torches
-    call init_waters_1
-    call init_spikes_1
-    call init_timer
-    inc c
-    ret
-
-first_to_second:
-    call load_level_2
-    call init_player
-    call init_door
-    call init_level_2_torches
-    call init_waters_2
-    call init_spikes_2
-    call init_timer
-    inc c
-    ret
-
-second_to_third:
-    call load_level_3
-    call init_player
-    call init_door
-    call init_level_3_torches
-    call init_waters_3
-    call init_spikes_3
-    call init_timer
-    inc c
     ret
 
 export init_door, open_and_close_door, open_door, enter_door

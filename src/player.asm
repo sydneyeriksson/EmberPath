@@ -14,7 +14,6 @@ def PLAYER_START_Y           equ 15
 def FIRE_UPRIGHT_TILEID      equ 0
 def FIRE_BALL                equ 24
 def FIRE_MOVING_SIDEWAYS     equ 6
-def OAMA_NO_FLAGS            equ 0
 def SPRITE_MOVING_DOWN       equ 9
 def SPRITE_JUMP_UP           equ 10
 def SPRITE_DONE_JUMPING      equ 24

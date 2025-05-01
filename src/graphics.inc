@@ -27,6 +27,20 @@ macro EnableLCD
 
 endm
 
+; returns a / 8
+macro DivideBy8
+    srl a
+    srl a
+    srl a
+endm
+
+; returns a * 8
+macro MultiplyBy8
+    sla a
+    sla a
+    sla a
+endm
+
 ; load the graphics data from ROM to VRAM
 macro LoadGraphicsDataIntoVRAM
     push de

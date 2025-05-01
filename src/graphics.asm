@@ -199,14 +199,17 @@ check_A_pressed:
         call move_window_offscreen_no_start
 
         DisableLCD
-        call init_player
+        call first_level
+        ; call init_player
+        ; call load_player_into_WRAM
+        ; call init_door
+        ; call init_level_1_torches
+        ; call load_torches_into_WRAM
+        ; call init_waters_1
+        ; call init_spikes_1
+        ; call init_timer
         call load_player_into_WRAM
-        call init_door
-        call init_level_1_torches
         call load_torches_into_WRAM
-        call init_waters_1
-        call init_spikes_1
-        call init_timer
         ld c, 1
         EnableLCD
     .done

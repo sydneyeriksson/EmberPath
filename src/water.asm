@@ -12,109 +12,7 @@ include "src/hardware.inc"
 include "src/joypad.inc"
 include "src/graphics.inc"
 
-; water
-def WATER_ID               equ 86
-def END_WATER_TILE_ID      equ 100
-
-def WATER_L1_Y     equ 120
-def WATER_1_L1_X   equ 80
-def WATER_2_L1_X   equ 88
-def WATER_3_L1_X   equ 96
-def WATER_4_L1_X   equ 104
-def WATER_5_L1_X   equ 112 
-
-def WATER_L2_Y     equ 64
-def WATER_1_L2_X   equ 64
-def WATER_2_L2_X   equ 72
-def WATER_3_L2_X   equ 96
-def WATER_4_L2_X   equ 104
-def WATER_5_L2_X   equ 0
-
-def WATER_L3_Y     equ 136
-def WATER_1_L3_X   equ 122
-def WATER_2_L3_X   equ 130
-def WATER_3_L3_X   equ 138
-def WATER_4_L3_X   equ 146
-def WATER_5_L3_X   equ 0
-
-;spikes
-def LARGE_SPIKE_ID    equ 15
-def SMALL_SPIKE_ID    equ 13
-def OFF_SCREEN        equ 0
-
-; L1 spikes
-def LARGE_SPIKE_1_L1_X   equ 32
-def LARGE_SPIKE_1_L1_Y   equ 48
-
-def LARGE_SPIKE_2_L1_X   equ 32
-def LARGE_SPIKE_2_L1_Y   equ OFF_SCREEN
-
-def SMALL_SPIKE_1_L1_X   equ 40
-def SMALL_SPIKE_1_L1_Y   equ 48
-
-def SMALL_SPIKE_2_L1_X   equ 16
-def SMALL_SPIKE_2_L1_Y   equ OFF_SCREEN
-
-def SMALL_SPIKE_3_L1_X   equ 8
-def SMALL_SPIKE_3_L1_Y   equ OFF_SCREEN
-
-; L2 spikes
-def LARGE_SPIKE_1_L2_X   equ 88
-def LARGE_SPIKE_1_L2_Y   equ 136
-
-def LARGE_SPIKE_2_L2_X   equ 112
-def LARGE_SPIKE_2_L2_Y   equ 136
-
-def SMALL_SPIKE_1_L2_X   equ 96
-def SMALL_SPIKE_1_L2_Y   equ 136
-
-def SMALL_SPIKE_2_L2_X   equ 104
-def SMALL_SPIKE_2_L2_Y   equ 136
-
-def SMALL_SPIKE_3_L2_X   equ 120
-def SMALL_SPIKE_3_L2_Y   equ 136
-
-; L3 spikes
-def LARGE_SPIKE_1_L3_X   equ 88
-def LARGE_SPIKE_1_L3_Y   equ 24
-
-def LARGE_SPIKE_2_L3_X   equ 40
-def LARGE_SPIKE_2_L3_Y   equ 112
-
-def SMALL_SPIKE_1_L3_X   equ 80
-def SMALL_SPIKE_1_L3_Y   equ 0
-
-def SMALL_SPIKE_2_L3_X   equ 16
-def SMALL_SPIKE_2_L3_Y   equ 112
-
-def SMALL_SPIKE_3_L3_X   equ 32
-def SMALL_SPIKE_3_L3_Y   equ 112
-
 section "water", rom0
-
-init_waters_1:
-    InitSprite WATER_1, WATER_1_L1_X, WATER_L1_Y, WATER_ID
-    InitSprite WATER_2, WATER_2_L1_X, WATER_L1_Y, WATER_ID
-    InitSprite WATER_3, WATER_3_L1_X, WATER_L1_Y, WATER_ID
-    InitSprite WATER_4, WATER_4_L1_X, WATER_L1_Y, WATER_ID
-    InitSprite WATER_5, WATER_5_L1_X, WATER_L1_Y, WATER_ID
-    ret
-
-init_waters_2:
-    InitSprite WATER_1, WATER_1_L2_X, WATER_L2_Y, WATER_ID
-    InitSprite WATER_2, WATER_2_L2_X, WATER_L2_Y, WATER_ID
-    InitSprite WATER_3, WATER_3_L2_X, WATER_L2_Y, WATER_ID
-    InitSprite WATER_4, WATER_4_L2_X, WATER_L2_Y, WATER_ID
-    InitSprite WATER_5, WATER_5_L2_X, WATER_L2_Y, WATER_ID
-    ret
-
-init_waters_3:
-    InitSprite WATER_1, WATER_1_L3_X, WATER_L3_Y, WATER_ID
-    InitSprite WATER_2, WATER_2_L3_X, WATER_L3_Y, WATER_ID
-    InitSprite WATER_3, WATER_3_L3_X, WATER_L3_Y, WATER_ID
-    InitSprite WATER_4, WATER_4_L3_X, WATER_L3_Y, WATER_ID
-    InitSprite WATER_5, WATER_5_L3_X, WATER_L3_Y, WATER_ID
-    ret
 
 macro WaterMove
     push af
@@ -145,29 +43,6 @@ move_water:
     WaterMove WATER_5 
     ret
 
-init_spikes_1:
-    InitSprite LARGE_SPIKE_1, LARGE_SPIKE_1_L1_X, LARGE_SPIKE_1_L1_Y, LARGE_SPIKE_ID
-    InitSprite LARGE_SPIKE_2, LARGE_SPIKE_2_L1_X, LARGE_SPIKE_2_L1_Y, LARGE_SPIKE_ID
-    InitSprite SMALL_SPIKE_1, SMALL_SPIKE_1_L1_X, SMALL_SPIKE_1_L1_Y, SMALL_SPIKE_ID
-    InitSprite SMALL_SPIKE_2, SMALL_SPIKE_2_L1_X, SMALL_SPIKE_2_L1_Y, SMALL_SPIKE_ID
-    InitSprite SMALL_SPIKE_3, SMALL_SPIKE_3_L1_X, SMALL_SPIKE_3_L1_Y, SMALL_SPIKE_ID
-    ret
-
-init_spikes_2:
-    InitSprite LARGE_SPIKE_1, LARGE_SPIKE_1_L2_X, LARGE_SPIKE_1_L2_Y, LARGE_SPIKE_ID
-    InitSprite LARGE_SPIKE_2, LARGE_SPIKE_2_L2_X, LARGE_SPIKE_2_L2_Y, LARGE_SPIKE_ID
-    InitSprite SMALL_SPIKE_1, SMALL_SPIKE_1_L2_X, SMALL_SPIKE_1_L2_Y, SMALL_SPIKE_ID
-    InitSprite SMALL_SPIKE_2, SMALL_SPIKE_2_L2_X, SMALL_SPIKE_2_L2_Y, SMALL_SPIKE_ID
-    InitSprite SMALL_SPIKE_3, SMALL_SPIKE_3_L2_X, SMALL_SPIKE_3_L2_Y, SMALL_SPIKE_ID
-    ret
-
-init_spikes_3:
-    InitSprite LARGE_SPIKE_1, LARGE_SPIKE_1_L3_X, LARGE_SPIKE_1_L3_Y, LARGE_SPIKE_ID
-    InitSprite LARGE_SPIKE_2, LARGE_SPIKE_2_L3_X, LARGE_SPIKE_2_L3_Y, LARGE_SPIKE_ID
-    InitSprite SMALL_SPIKE_1, SMALL_SPIKE_1_L3_X, SMALL_SPIKE_1_L3_Y, SMALL_SPIKE_ID
-    InitSprite SMALL_SPIKE_2, SMALL_SPIKE_2_L3_X, SMALL_SPIKE_2_L3_Y, SMALL_SPIKE_ID
-    InitSprite SMALL_SPIKE_3, SMALL_SPIKE_3_L3_X, SMALL_SPIKE_3_L3_Y, SMALL_SPIKE_ID
-    ret
 
 ; check if the player is touching any of the water sprite tiles
 ; return z if touching, nz if not
@@ -250,4 +125,4 @@ fire_evaporate:
     .stay_alive
     ret
 
-export init_waters_1, init_waters_2, init_waters_3, init_spikes_1, init_spikes_2, init_spikes_3, fire_evaporate, init_waters, move_water
+export fire_evaporate, init_waters, move_water
