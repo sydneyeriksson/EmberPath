@@ -56,24 +56,32 @@ main:
     ; init c as the game level counter
     ld c, 1
 
-    ; currently has 6 halts in a loop
+    ; currently has 5 halts in a loop
     .game_loop
-        halt
-        call flicker
-        halt
-        call move_water
-        call flicker_torches
-        call update_timer
+        ld a, c
+        cp a, GAME_OVER
+        jp z, .game_over
+            halt
+            call load_torches_into_WRAM
+            call load_player_into_WRAM
+            call move_water
+            call update_timer
+            halt
+            UpdateJoypad
+            call move_player
+            call flicker
+            call light_torch
+            call flicker_torches
+            halt
+            call update_player_from_WRAM
+            call update_torches_from_WRAM
+            call check_all_torches_lit
+            halt
+            call fire_evaporate
+            call enter_door
+            jp .game_loop
+        .game_over
         halt
         UpdateJoypad
-        call move_player
-        call light_torch
-        halt
-        call check_all_torches_lit
-        halt
-        call fire_evaporate
-        halt
         call check_A_pressed
-        halt
-        call enter_door
-        jr .game_loop
+        jp .game_loop

@@ -176,10 +176,10 @@ evaporate_possible:
     push de
     push hl
     ; get the player location
-    ld a, [PLAYER_SPRITE + OAMA_X]
+    ld a, [WRAM_PLAYER + SPRITE_X]
     add a, 4
     ld b, a
-    ld a, [PLAYER_SPRITE + OAMA_Y]
+    ld a, [WRAM_PLAYER + SPRITE_Y]
     add a, FLOATING_OFFSET
     ld c, a
 
@@ -245,7 +245,7 @@ fire_evaporate:
     call evaporate_possible
     jr nz, .stay_alive
         call player_death_sound
-        ; if the player is not touching the water, load the game_over screen
+        ; if the player is touching the water, load the game_over screen
         call game_over
     .stay_alive
     ret

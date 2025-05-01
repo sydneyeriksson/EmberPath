@@ -52,12 +52,10 @@ endm
 
 
 macro CallHL
-    push de
     ld de, .call_return_address\@
     push de
     jp hl
     .call_return_address\@
-    pop de
 endm
 
 UpdateFuncTable:
@@ -110,6 +108,7 @@ enter_door_possible:
 ; Attempt to enter the door to go to the next level 
 ; Player can only enter if the door is open
 enter_door:
+    push de
     ; Check if the door is open and player is touching it
     call enter_door_possible
     jr nz, .dont_enter
@@ -128,11 +127,12 @@ enter_door:
         ld l, a
         CallHL
 
-        .done
+        ;.done
         EnableLCD
         call next_level_sound
 
     .dont_enter
+    pop de
     ret
 
 first_level:

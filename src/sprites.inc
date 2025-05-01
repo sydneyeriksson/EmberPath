@@ -96,6 +96,30 @@ macro InitSprite
     Copy [\1 + OAMA_FLAGS], OAMF_PAL1
 endm
 
+; \1 is the sprite from WRAM
+; \2 is the sprite start x from WRAM
+; \3 is the sprite start y from WRAM
+; \4 is the sprite tile ID from WRAM
+; \5 is the sprite flags from WRAM
+macro LoadSpriteData
+    Copy [\1 + OAMA_X], \2
+    Copy [\1 + OAMA_Y], \3
+    Copy [\1 + OAMA_TILEID], \4
+    Copy [\1 + OAMA_FLAGS], \5
+endm
+
+; \1 is the sprite
+; \2 is the sprite start x
+; \3 is the sprite start y
+; \4 is the sprite tile ID
+; \5 is the sprite flags
+macro LoadWramData
+    Copy [\1 + SPRITE_X], \2
+    Copy [\1 + SPRITE_Y], \3
+    Copy [\1 + TILE_ID], \4
+    Copy [\1 + FLAGS], \5
+endm
+
 ; \1 is the sprite
 ; \2 is the sprite start x
 ; \3 is the sprite start y

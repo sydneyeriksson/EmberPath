@@ -22,17 +22,17 @@ def TILES_COUNT                     equ (384)
 def BYTES_PER_TILE                  equ (16)
 def TILES_BYTE_SIZE                 equ (TILES_COUNT * BYTES_PER_TILE)
 
-def TILEMAPS_COUNT                  equ (6)
+def TILEMAPS_COUNT                  equ (5)
 def BYTES_PER_TILEMAP               equ (1024)
 def TILEMAPS_BYTE_SIZE              equ (TILEMAPS_COUNT * BYTES_PER_TILEMAP)
 
 def GRAPHICS_DATA_SIZE              equ (TILES_BYTE_SIZE + TILEMAPS_BYTE_SIZE)
 def GRAPHICS_DATA_ADDRESS_END       equ ($4000)
 def GRAPHICS_DATA_ADDRESS_START     equ (GRAPHICS_DATA_ADDRESS_END - GRAPHICS_DATA_SIZE)
-def TILEMAP_LEVEL_2_START           equ (GRAPHICS_DATA_ADDRESS_END - 4*BYTES_PER_TILEMAP)
-def TILEMAP_LEVEL_3_START           equ (GRAPHICS_DATA_ADDRESS_END - 3*BYTES_PER_TILEMAP)
-def TILEMAP_GAME_OVER_START         equ (GRAPHICS_DATA_ADDRESS_END - 2*BYTES_PER_TILEMAP)
-def TILEMAP_GAME_WON_START          equ (GRAPHICS_DATA_ADDRESS_END - BYTES_PER_TILEMAP)
+def TILEMAP_LEVEL_2_START           equ (GRAPHICS_DATA_ADDRESS_END - 3*BYTES_PER_TILEMAP)
+def TILEMAP_LEVEL_3_START           equ (GRAPHICS_DATA_ADDRESS_END - 2*BYTES_PER_TILEMAP)
+def TILEMAP_GAME_OVER_START         equ (GRAPHICS_DATA_ADDRESS_END - BYTES_PER_TILEMAP)
+; def TILEMAP_GAME_WON_START          equ (GRAPHICS_DATA_ADDRESS_END - BYTES_PER_TILEMAP)
 
 def WINDOW_GRAPHIC_HEIGHT       equ (40)
 def PAUSE_FRAMES                equ (20)
@@ -117,11 +117,47 @@ load_level_3:
     ret
 
 load_game_over:
-    LoadNewMapDataIntoVRAM TILEMAP_GAME_OVER_START, TILEMAP_GAME_WON_START
+    LoadNewMapDataIntoVRAM TILEMAP_GAME_OVER_START, GRAPHICS_DATA_ADDRESS_END
     ret
 
-load_game_won:
-    LoadNewMapDataIntoVRAM TILEMAP_GAME_WON_START, GRAPHICS_DATA_ADDRESS_END
+load_congrats_letters:
+    push hl
+    ; load congrats into the window tilemap
+    ld hl, $9905
+    ChangeTile $0
+    inc hl
+    ChangeTile $42
+    inc hl
+    ChangeTile $4E
+    inc hl
+    ChangeTile $4D
+    inc hl
+    ChangeTile $46
+    inc hl
+    ChangeTile $51
+    inc hl
+    ChangeTile $40
+    inc hl
+    ChangeTile $53
+    inc hl
+    ChangeTile $52
+    inc hl
+    ChangeTile $0
+
+    ; load replay into the window tilemap
+    ld hl, $99C9
+    ChangeTile $51
+    inc hl
+    ChangeTile $44
+    inc hl
+    ChangeTile $4F
+    inc hl
+    ChangeTile $4B
+    inc hl
+    ChangeTile $40
+    inc hl
+    ChangeTile $58
+    pop hl
     ret
 
 ; sets z flag if player is hiding
@@ -149,8 +185,10 @@ check_A_pressed:
 
         DisableLCD
         call init_player
+        call load_player_into_WRAM
         call init_door
         call init_level_1_torches
+        call load_torches_into_WRAM
         call init_waters_1
         call init_spikes_1
         call init_timer
@@ -165,16 +203,17 @@ game_over:
     DisableLCD
     call load_game_over
     InitOAM
-    Copy [PLAYER_SPRITE + OAMA_X], PLAYER_HIDE_X
+    Copy [WRAM_PLAYER + SPRITE_X], PLAYER_HIDE_X
     EnableLCD
     ret
 
 ; loads the game won screen and hides the player
 game_won:
     ld c, GAME_OVER
-    call load_game_won
+    call load_game_over
+    call load_congrats_letters
     InitOAM
-    Copy [PLAYER_SPRITE + OAMA_X], PLAYER_HIDE_X
+    Copy [WRAM_PLAYER + SPRITE_X], PLAYER_HIDE_X
     ret
     
 
@@ -189,4 +228,3 @@ incbin "assets/correct_window.tlm"
 incbin "assets/level_2.tlm"
 incbin "assets/third_level_ladders.tlm"
 incbin "assets/game_over_map.tlm"
-incbin "assets/congratulations.tlm"

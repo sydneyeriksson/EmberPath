@@ -60,6 +60,13 @@ macro LoadNewMapDataIntoVRAM
     pop de
 endm
 
+; \1 is the tile index that we want to place in the tile map
+; hl contains the position we want to place the new tile
+macro ChangeTile
+    ld a, \1
+    ld [hl], a
+endm
+
 ; clear the OAM
 macro InitOAM
     push bc

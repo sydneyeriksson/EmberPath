@@ -17,7 +17,7 @@ def PAD_PREV                rb 1
 def PAD_PRSS                rb 1
 def PAD_RLSE                rb 1
 
-def WRAM_TORCH                   rl 4
+def WRAM_TORCH              rl 4
 def WRAM_PLAYER             rl 1
 
 RSRESET

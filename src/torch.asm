@@ -9,7 +9,7 @@ include "src/utils.inc"
 include "src/wram.inc"
 include "src/sprites.inc"
 
-def UNLIT_TORCH_TILE_ID          equ 50
+def UNLIT_TORCH_TILE_ID          equ 54
 def START_TORCH_FLICKER_TILE_ID  equ 52
 def END_TORCH_FLICKER_TILE_ID    equ 60
 def OAMA_NO_FLAGS                equ 0
@@ -72,11 +72,6 @@ init_level_1_torches:
     InitSprite TORCH_2, TORCH_2_START_X, TORCH_2_START_Y, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_3, TORCH_3_START_X, TORCH_3_START_Y, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_4, TORCH_4_START_X, TORCH_4_START_Y, UNLIT_TORCH_TILE_ID
-
-    InitSpriteWram WRAM_TORCH_1, TORCH_1_START_X, TORCH_1_START_Y, UNLIT_TORCH_TILE_ID, OAMF_PAL1
-    InitSpriteWram WRAM_TORCH_2, TORCH_2_START_X, TORCH_2_START_Y, UNLIT_TORCH_TILE_ID, OAMF_PAL1
-    InitSpriteWram WRAM_TORCH_3, TORCH_3_START_X, TORCH_3_START_Y, UNLIT_TORCH_TILE_ID, OAMF_PAL1
-    InitSpriteWram WRAM_TORCH_4, TORCH_4_START_X, TORCH_4_START_Y, UNLIT_TORCH_TILE_ID, OAMF_PAL1
     ret
 
 init_level_2_torches:
@@ -84,11 +79,6 @@ init_level_2_torches:
     InitSprite TORCH_2, TORCH_2_START_X_L2, TORCH_2_START_Y_L2, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_3, TORCH_3_START_X_L2, TORCH_3_START_Y_L2, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_4, TORCH_4_START_X_L2, TORCH_4_START_Y_L2, UNLIT_TORCH_TILE_ID
-
-    InitSpriteWram WRAM_TORCH_1, TORCH_1_START_X_L2, TORCH_1_START_Y_L2, UNLIT_TORCH_TILE_ID, OAMF_PAL1
-    InitSpriteWram WRAM_TORCH_2, TORCH_2_START_X_L2, TORCH_2_START_Y_L2, UNLIT_TORCH_TILE_ID, OAMF_PAL1
-    InitSpriteWram WRAM_TORCH_3, TORCH_3_START_X_L2, TORCH_3_START_Y_L2, UNLIT_TORCH_TILE_ID, OAMF_PAL1
-    InitSpriteWram WRAM_TORCH_4, TORCH_4_START_X_L2, TORCH_4_START_Y_L2, UNLIT_TORCH_TILE_ID, OAMF_PAL1
     ret
 
 init_level_3_torches:
@@ -96,13 +86,14 @@ init_level_3_torches:
     InitSprite TORCH_2, TORCH_2_START_X_L3, TORCH_2_START_Y_L3, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_3, TORCH_3_START_X_L3, TORCH_3_START_Y_L3, UNLIT_TORCH_TILE_ID
     InitSprite TORCH_4, TORCH_4_START_X_L3, TORCH_4_START_Y_L3, UNLIT_TORCH_TILE_ID
-
-    InitSpriteWram WRAM_TORCH_1, TORCH_1_START_X_L3, TORCH_1_START_Y_L3, UNLIT_TORCH_TILE_ID, OAMF_PAL1
-    InitSpriteWram WRAM_TORCH_2, TORCH_2_START_X_L3, TORCH_2_START_Y_L3, UNLIT_TORCH_TILE_ID, OAMF_PAL1
-    InitSpriteWram WRAM_TORCH_3, TORCH_3_START_X_L3, TORCH_3_START_Y_L3, UNLIT_TORCH_TILE_ID, OAMF_PAL1
-    InitSpriteWram WRAM_TORCH_4, TORCH_4_START_X_L3, TORCH_4_START_Y_L3, UNLIT_TORCH_TILE_ID, OAMF_PAL1
     ret
- 
+
+load_torches_into_WRAM:
+    LoadWramData WRAM_TORCH_1, [TORCH_1 + OAMA_X], [TORCH_1 + OAMA_Y], [TORCH_1 + OAMA_TILEID], [TORCH_1 + OAMA_FLAGS]
+    LoadWramData WRAM_TORCH_2, [TORCH_2 + OAMA_X], [TORCH_2 + OAMA_Y], [TORCH_2 + OAMA_TILEID], [TORCH_2 + OAMA_FLAGS]
+    LoadWramData WRAM_TORCH_3, [TORCH_3 + OAMA_X], [TORCH_3 + OAMA_Y], [TORCH_3 + OAMA_TILEID], [TORCH_3 + OAMA_FLAGS]
+    LoadWramData WRAM_TORCH_4, [TORCH_4 + OAMA_X], [TORCH_4 + OAMA_Y], [TORCH_4 + OAMA_TILEID], [TORCH_4 + OAMA_FLAGS]
+    ret
 ; makes the torch flicker
 ; \1 is the torch sprite ID
 macro TorchFlicker
@@ -126,6 +117,13 @@ flicker_torches:
     TorchFlicker WRAM_TORCH_2
     TorchFlicker WRAM_TORCH_3
     TorchFlicker WRAM_TORCH_4
+    ret
+
+update_torches_from_WRAM:
+    LoadSpriteData TORCH_1, [WRAM_TORCH_1 + SPRITE_X], [WRAM_TORCH_1 + SPRITE_Y], [WRAM_TORCH_1 + TILE_ID], [WRAM_TORCH_1 + FLAGS]
+    LoadSpriteData TORCH_2, [WRAM_TORCH_2 + SPRITE_X], [WRAM_TORCH_2 + SPRITE_Y], [WRAM_TORCH_2 + TILE_ID], [WRAM_TORCH_2 + FLAGS]
+    LoadSpriteData TORCH_3, [WRAM_TORCH_3 + SPRITE_X], [WRAM_TORCH_3 + SPRITE_Y], [WRAM_TORCH_3 + TILE_ID], [WRAM_TORCH_3 + FLAGS]
+    LoadSpriteData TORCH_4, [WRAM_TORCH_4 + SPRITE_X], [WRAM_TORCH_4 + SPRITE_Y], [WRAM_TORCH_4 + TILE_ID], [WRAM_TORCH_4 + FLAGS]
     ret
 
 ; check all torches (sprites after the doors but before the water?)
@@ -167,11 +165,11 @@ light_possible:
         jp .done
 
     .torch_4
-    Copy d, [WRAM_TORCH_3 + SPRITE_X]
-    Copy e, [WRAM_TORCH_3 + SPRITE_Y]
+    Copy d, [WRAM_TORCH_4 + SPRITE_X]
+    Copy e, [WRAM_TORCH_4 + SPRITE_Y]
     FindOverlappingSprite b, c, d, e
     jr nz, .done
-        ld hl, WRAM_TORCH_3
+        ld hl, WRAM_TORCH_4
 
     .done
     pop de
@@ -224,4 +222,4 @@ check_all_torches_lit:
     
     ret
     
-export init_level_1_torches, init_level_2_torches, init_level_3_torches, light_torch, check_all_torches_lit, flicker_torches, load_torch_data_into_WRAM
+export init_level_1_torches, init_level_2_torches, init_level_3_torches, light_torch, check_all_torches_lit, flicker_torches, load_torches_into_WRAM, update_torches_from_WRAM
