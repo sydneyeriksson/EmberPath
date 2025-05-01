@@ -1,10 +1,9 @@
 ; 
-; CS 240: Storing Joypad state, including pressed/released/etc
-; also storing torch values.
+; CS-240 World 8: Final Game
 ;
 ; @file wram.inc
-; @author Darren Strash and CS 240
-; @brief a place to store all WRAM variables
+; @authors Asher Kaplan and Sydney Eriksson
+; @date April 30, 2025
 
 include "src/hardware.inc"
 

@@ -1,9 +1,9 @@
 ;
-; CS-240 World 7: Feature Complete
+; CS-240 World 8: Final Game
 ;
 ; @file water.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 21, 2025
+; @date April 30, 2025
 
 include "src/utils.inc"
 include "src/wram.inc"
@@ -115,7 +115,7 @@ init_waters_3:
     InitSprite WATER_4, WATER_4_L3_X, WATER_L3_Y, WATER_ID
     InitSprite WATER_5, WATER_5_L3_X, WATER_L3_Y, WATER_ID
     ret
-;/*
+
 macro WaterMove
     push af
     push de
@@ -144,7 +144,7 @@ move_water:
     WaterMove WATER_4
     WaterMove WATER_5 
     ret
-;*/
+
 init_spikes_1:
     InitSprite LARGE_SPIKE_1, LARGE_SPIKE_1_L1_X, LARGE_SPIKE_1_L1_Y, LARGE_SPIKE_ID
     InitSprite LARGE_SPIKE_2, LARGE_SPIKE_2_L1_X, LARGE_SPIKE_2_L1_Y, LARGE_SPIKE_ID
@@ -177,7 +177,7 @@ evaporate_possible:
     push hl
     ; get the player location
     ld a, [WRAM_PLAYER + SPRITE_X]
-    add a, 4
+    add a, FLOATING_OFFSET
     ld b, a
     ld a, [WRAM_PLAYER + SPRITE_Y]
     add a, FLOATING_OFFSET

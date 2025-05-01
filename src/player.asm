@@ -1,9 +1,9 @@
 ;
-; CS-240 World 7: Feature Complete
+; CS-240 World 8: Final Game
 ;
 ; @file player.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 21, 2025
+; @date April 30, 2025
 
 include "src/utils.inc"
 include "src/wram.inc"
@@ -20,6 +20,9 @@ def SPRITE_JUMP_UP           equ 10
 def SPRITE_DONE_JUMPING      equ 24
 def END_FLICKER_TILE_ID      equ 6
 def SPRITE_HOVER             equ 10
+def X_RIGHT_OFFSET           equ 5
+def X_LEFT_OFFSET            equ 2
+
 
 
 section "fire", rom0
@@ -95,14 +98,14 @@ macro Gravity
     ld c, a
     Copy b, [WRAM_PLAYER + SPRITE_X]
     ld a, b
-    sub a, 5
+    sub a, X_RIGHT_OFFSET
     ld b, a
     call can_player_move_here
     jr nz, .reset\@
 
     Copy b, [WRAM_PLAYER + SPRITE_X]
     ld a, b
-    sub a, 2
+    sub a, X_LEFT_OFFSET
     ld b, a
     call can_player_move_here
     jr z, .make_fire_ball\@
@@ -193,21 +196,6 @@ jump:
         Copy [WRAM_PLAYER + FLAGS], OAMF_PAL1
     .skip_y_flip
     JumpSprite e
-
-    ; ; check if player can move here, if not, reverse movement
-    ; Copy a, [PLAYER_SPRITE + OAMA_Y]
-    ; add a, SPRITE_MOVING_DOWN
-    ; ld c, a
-    ; Copy a, [PLAYER_SPRITE + OAMA_X]
-    ; sub a, 5
-    ; ld b, a
-    ; call can_player_move_here
-    ; jr z, .done
-    ;     ; undo movement and end jump
-    ;     ReverseJumpSprite e
-    ;     ld e, NO_JUMP
-    ;     inc e
-    ; .done
     dec e
 
     pop bc

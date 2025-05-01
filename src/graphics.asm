@@ -1,9 +1,9 @@
 ;
-; CS-240 World 7: Feature Complete
+; CS-240 World 8: Final Game
 ;
 ; @file graphics.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 21, 2025
+; @date April 30, 2025
 
 include "src/utils.inc"
 include "src/wram.inc"
@@ -32,7 +32,6 @@ def GRAPHICS_DATA_ADDRESS_START     equ (GRAPHICS_DATA_ADDRESS_END - GRAPHICS_DA
 def TILEMAP_LEVEL_2_START           equ (GRAPHICS_DATA_ADDRESS_END - 3*BYTES_PER_TILEMAP)
 def TILEMAP_LEVEL_3_START           equ (GRAPHICS_DATA_ADDRESS_END - 2*BYTES_PER_TILEMAP)
 def TILEMAP_GAME_OVER_START         equ (GRAPHICS_DATA_ADDRESS_END - BYTES_PER_TILEMAP)
-; def TILEMAP_GAME_WON_START          equ (GRAPHICS_DATA_ADDRESS_END - BYTES_PER_TILEMAP)
 
 def WINDOW_GRAPHIC_HEIGHT       equ (40)
 def PAUSE_FRAMES                equ (20)
@@ -40,6 +39,22 @@ def PAUSE_WINDOW                equ (WINDOW_GRAPHIC_HEIGHT + PAUSE_FRAMES + 1)
 def MOVE_WINDOW_DOWN            equ (WINDOW_GRAPHIC_HEIGHT + 1)
 def MOVE_WINDOW_UP              equ (WINDOW_GRAPHIC_HEIGHT * 2 + PAUSE_FRAMES)
 def WINDOW_OFFSCREEN            equ (140)
+
+def BEGIN_CONGRATS              equ ($9905)
+def BLANK_TILE_ID               equ ($0)
+def C_TILE_ID                   equ ($42)
+def O_TILE_ID                   equ ($4E)
+def N_TILE_ID                   equ ($4D)
+def G_TILE_ID                   equ ($46)
+def R_TILE_ID                   equ ($51)
+def A_TILE_ID                   equ ($40)
+def T_TILE_ID                   equ ($53)
+def S_TILE_ID                   equ ($52)
+def BEGIN_START_REPLAY          equ ($99C9)
+def E_TILE_ID                   equ ($44)
+def P_TILE_ID                   equ ($4F)
+def L_TILE_ID                   equ ($4B)
+def Y_TILE_ID                   equ ($58)
 
 def SPRITE_0_ADDRESS equ (_OAMRAM)
 
@@ -123,40 +138,40 @@ load_game_over:
 load_congrats_letters:
     push hl
     ; load congrats into the window tilemap
-    ld hl, $9905
-    ChangeTile $0
+    ld hl, BEGIN_CONGRATS
+    ChangeTile BLANK_TILE_ID
     inc hl
-    ChangeTile $42
+    ChangeTile C_TILE_ID
     inc hl
-    ChangeTile $4E
+    ChangeTile O_TILE_ID
     inc hl
-    ChangeTile $4D
+    ChangeTile N_TILE_ID
     inc hl
-    ChangeTile $46
+    ChangeTile G_TILE_ID
     inc hl
-    ChangeTile $51
+    ChangeTile R_TILE_ID
     inc hl
-    ChangeTile $40
+    ChangeTile A_TILE_ID
     inc hl
-    ChangeTile $53
+    ChangeTile T_TILE_ID
     inc hl
-    ChangeTile $52
+    ChangeTile S_TILE_ID
     inc hl
-    ChangeTile $0
+    ChangeTile BLANK_TILE_ID
 
     ; load replay into the window tilemap
-    ld hl, $99C9
-    ChangeTile $51
+    ld hl, BEGIN_START_REPLAY
+    ChangeTile R_TILE_ID
     inc hl
-    ChangeTile $44
+    ChangeTile E_TILE_ID
     inc hl
-    ChangeTile $4F
+    ChangeTile P_TILE_ID
     inc hl
-    ChangeTile $4B
+    ChangeTile L_TILE_ID
     inc hl
-    ChangeTile $40
+    ChangeTile A_TILE_ID
     inc hl
-    ChangeTile $58
+    ChangeTile Y_TILE_ID
     pop hl
     ret
 

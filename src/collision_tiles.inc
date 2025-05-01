@@ -1,9 +1,9 @@
 ;
-; CS-240 World 7: Feature Complete
+; CS-240 World 8: Final Game
 ;
 ; @file collision_tiles.inc
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 21, 2025
+; @date April 30, 2025
 
 if !def(COLLISION_TILES_RGBINC)
 def COLLISION_TILES_RGBINC equ 1

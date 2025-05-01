@@ -1,9 +1,9 @@
 ;
-; CS-240 World 7: Feature Complete
+; CS-240 World 8: Final Game
 ;
 ; @file sound.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 21, 2025
+; @date April 30, 2025
 include "src/utils.inc"
 
 section "sound", rom0

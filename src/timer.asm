@@ -1,9 +1,9 @@
 ;
-; CS-240 World 7: Feature Complete
+; CS-240 World 8: Final Game
 ;
 ; @file timer.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 21, 2025
+; @date April 30, 2025
 
 include "src/utils.inc"
 include "src/wram.inc"
@@ -52,6 +52,7 @@ macro DecreaseMinutes
     .done\@
 endm
 
+; Checks if all of the timer numbers are 0
 macro CheckOutOfTime
     Copy a, [ONES_TIMER + OAMA_TILEID]  
     cp a, START_NUMBER_TILE_ID
@@ -107,6 +108,8 @@ update_timer:
             DecreaseOnesNumber ONES_TIMER
             ld d, LOOPS_PER_SECOND
         .done
+
+        ; If out of time end the game
         CheckOutOfTime
         jr nz, .not_out_of_time
             call player_death_sound

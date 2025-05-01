@@ -1,15 +1,15 @@
 ;
-; CS-240 World 7: Feature Complete
+; CS-240 World 8: Final Game
 ;
 ; @file torch.asm
 ; @authors Asher Kaplan and Sydney Eriksson
-; @date April 21, 2025
+; @date April 30, 2025
 
 include "src/utils.inc"
 include "src/wram.inc"
 include "src/sprites.inc"
 
-def UNLIT_TORCH_TILE_ID          equ 50
+def UNLIT_TORCH_TILE_ID          equ 52
 def START_TORCH_FLICKER_TILE_ID  equ 52
 def END_TORCH_FLICKER_TILE_ID    equ 60
 def OAMA_NO_FLAGS                equ 0
@@ -94,6 +94,7 @@ load_torches_into_WRAM:
     LoadWramData WRAM_TORCH_3, [TORCH_3 + OAMA_X], [TORCH_3 + OAMA_Y], [TORCH_3 + OAMA_TILEID], [TORCH_3 + OAMA_FLAGS]
     LoadWramData WRAM_TORCH_4, [TORCH_4 + OAMA_X], [TORCH_4 + OAMA_Y], [TORCH_4 + OAMA_TILEID], [TORCH_4 + OAMA_FLAGS]
     ret
+
 ; makes the torch flicker
 ; \1 is the torch sprite ID
 macro TorchFlicker
@@ -134,7 +135,7 @@ light_possible:
     push de
     ; Get player location
     ld a, [WRAM_PLAYER + SPRITE_X]
-    add a, 4
+    add a, FLOATING_OFFSET
     ld b, a
     ld a, [WRAM_PLAYER + SPRITE_Y]
     add a, FLOATING_OFFSET
@@ -219,7 +220,6 @@ check_all_torches_lit:
 
     call open_door
     .done
-    
     ret
     
 export init_level_1_torches, init_level_2_torches, init_level_3_torches, light_torch, check_all_torches_lit, flicker_torches, load_torches_into_WRAM, update_torches_from_WRAM
