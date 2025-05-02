@@ -96,9 +96,7 @@ enter_door_possible:
         add a, FLOATING_OFFSET
         ld c, a
 
-        Copy d, [LEFT_DOOR + OAMA_X]
-        Copy e, [LEFT_DOOR + OAMA_Y]
-        FindOverlappingSprite b, c, d, e
+        FindOverlappingSprite b, c, OAMA_X, OAMA_Y, LEFT_DOOR
         
     .done
     pop de

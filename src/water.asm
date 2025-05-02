@@ -45,7 +45,6 @@ move_water:
     WaterMove WATER_5 
     ret
 
-
 ; check if the player is touching any of the water sprite tiles
 ; return z if touching, nz if not
 evaporate_possible:
@@ -60,55 +59,34 @@ evaporate_possible:
     add a, FLOATING_OFFSET
     ld c, a
 
-    ;check if player is touching any of the water sprites
-    Copy d, [WATER_1 + OAMA_X]
-    Copy e, [WATER_1 + OAMA_Y]
-    FindOverlappingSprite b, c, d, e
+    FindOverlappingSprite b, c, OAMA_X, OAMA_Y, WATER_1
     jp z, .done
 
-    Copy d, [WATER_2 + OAMA_X]
-    Copy e, [WATER_2 + OAMA_Y]
-    FindOverlappingSprite b, c, d, e
-    jp z, .done
-    
-    Copy d, [WATER_3 + OAMA_X]
-    Copy e, [WATER_3 + OAMA_Y]
-    FindOverlappingSprite b, c, d, e
+    FindOverlappingSprite b, c, OAMA_X, OAMA_Y, WATER_2
     jp z, .done
 
-    Copy d, [WATER_4 + OAMA_X]
-    Copy e, [WATER_4 + OAMA_Y]
-    FindOverlappingSprite b, c, d, e
+    FindOverlappingSprite b, c, OAMA_X, OAMA_Y, WATER_3
     jp z, .done
 
-    Copy d, [WATER_5 + OAMA_X]
-    Copy e, [WATER_5 + OAMA_Y]
-    FindOverlappingSprite b, c, d, e
+    FindOverlappingSprite b, c, OAMA_X, OAMA_Y, WATER_4
     jp z, .done
 
-    Copy d, [LARGE_SPIKE_1 + OAMA_X]
-    Copy e, [LARGE_SPIKE_1 + OAMA_Y]
-    FindOverlappingSprite b, c, d, e
+    FindOverlappingSprite b, c, OAMA_X, OAMA_Y, WATER_5
     jp z, .done
 
-    Copy d, [LARGE_SPIKE_2 + OAMA_X]
-    Copy e, [LARGE_SPIKE_2 + OAMA_Y]
-    FindOverlappingSprite b, c, d, e
+    FindOverlappingSprite b, c, OAMA_X, OAMA_Y, LARGE_SPIKE_1
     jp z, .done
 
-    Copy d, [SMALL_SPIKE_1 + OAMA_X]
-    Copy e, [SMALL_SPIKE_1 + OAMA_Y]
-    FindOverlappingSprite b, c, d, e
+    FindOverlappingSprite b, c, OAMA_X, OAMA_Y, LARGE_SPIKE_2
     jp z, .done
 
-    Copy d, [SMALL_SPIKE_2 + OAMA_X]
-    Copy e, [SMALL_SPIKE_2 + OAMA_Y]
-    FindOverlappingSprite b, c, d, e
+    FindOverlappingSprite b, c, OAMA_X, OAMA_Y, SMALL_SPIKE_1
     jp z, .done
 
-    Copy d, [SMALL_SPIKE_3 + OAMA_X]
-    Copy e, [SMALL_SPIKE_3 + OAMA_Y]
-    FindOverlappingSprite b, c, d, e
+    FindOverlappingSprite b, c, OAMA_X, OAMA_Y, SMALL_SPIKE_2
+    jp z, .done
+
+    FindOverlappingSprite b, c, OAMA_X, OAMA_Y, SMALL_SPIKE_3
 
     .done
     pop hl

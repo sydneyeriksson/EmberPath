@@ -24,13 +24,6 @@ macro AddToHL
     ld h, a
 endm
 
-load_torches_into_WRAM:
-    LoadWramData WRAM_TORCH_1, [TORCH_1 + OAMA_X], [TORCH_1 + OAMA_Y], [TORCH_1 + OAMA_TILEID], [TORCH_1 + OAMA_FLAGS]
-    LoadWramData WRAM_TORCH_2, [TORCH_2 + OAMA_X], [TORCH_2 + OAMA_Y], [TORCH_2 + OAMA_TILEID], [TORCH_2 + OAMA_FLAGS]
-    LoadWramData WRAM_TORCH_3, [TORCH_3 + OAMA_X], [TORCH_3 + OAMA_Y], [TORCH_3 + OAMA_TILEID], [TORCH_3 + OAMA_FLAGS]
-    LoadWramData WRAM_TORCH_4, [TORCH_4 + OAMA_X], [TORCH_4 + OAMA_Y], [TORCH_4 + OAMA_TILEID], [TORCH_4 + OAMA_FLAGS]
-    ret
-
 ; makes the torch flicker
 ; \1 is the torch sprite ID
 macro TorchFlicker
@@ -48,6 +41,13 @@ macro TorchFlicker
     .done\@
     pop af
     endm 
+
+load_torches_into_WRAM:
+    LoadWramData WRAM_TORCH_1, [TORCH_1 + OAMA_X], [TORCH_1 + OAMA_Y], [TORCH_1 + OAMA_TILEID], [TORCH_1 + OAMA_FLAGS]
+    LoadWramData WRAM_TORCH_2, [TORCH_2 + OAMA_X], [TORCH_2 + OAMA_Y], [TORCH_2 + OAMA_TILEID], [TORCH_2 + OAMA_FLAGS]
+    LoadWramData WRAM_TORCH_3, [TORCH_3 + OAMA_X], [TORCH_3 + OAMA_Y], [TORCH_3 + OAMA_TILEID], [TORCH_3 + OAMA_FLAGS]
+    LoadWramData WRAM_TORCH_4, [TORCH_4 + OAMA_X], [TORCH_4 + OAMA_Y], [TORCH_4 + OAMA_TILEID], [TORCH_4 + OAMA_FLAGS]
+    ret
 
 flicker_torches:
     TorchFlicker WRAM_TORCH_1
@@ -78,33 +78,33 @@ light_possible:
     ld c, a
 
     ; Check each torch to see if overlapping
-    Copy d, [WRAM_TORCH_1 + SPRITE_X]
-    Copy e, [WRAM_TORCH_1 + SPRITE_Y]
-    FindOverlappingSprite b, c, d, e
+    ;Copy d, [WRAM_TORCH_1 + SPRITE_X]
+    ;Copy e, [WRAM_TORCH_1 + SPRITE_Y]
+    FindOverlappingSprite b, c, SPRITE_X, SPRITE_Y, WRAM_TORCH_1
     jp nz, .torch_2
         ld hl, WRAM_TORCH_1
         jp .done
 
     .torch_2
-    Copy d, [WRAM_TORCH_2 + SPRITE_X]
-    Copy e, [WRAM_TORCH_2 + SPRITE_Y]
-    FindOverlappingSprite b, c, d, e
+    ;Copy d, [WRAM_TORCH_2 + SPRITE_X]
+    ;Copy e, [WRAM_TORCH_2 + SPRITE_Y]
+    FindOverlappingSprite b, c, SPRITE_X, SPRITE_Y, WRAM_TORCH_2
     jp nz, .torch_3
         ld hl, WRAM_TORCH_2
         jp .done
 
     .torch_3
-    Copy d, [WRAM_TORCH_3 + SPRITE_X]
-    Copy e, [WRAM_TORCH_3 + SPRITE_Y]
-    FindOverlappingSprite b, c, d, e
+    ;Copy d, [WRAM_TORCH_3 + SPRITE_X]
+    ;Copy e, [WRAM_TORCH_3 + SPRITE_Y]
+    FindOverlappingSprite b, c, SPRITE_X, SPRITE_Y, WRAM_TORCH_3
     jp nz, .torch_4
         ld hl, WRAM_TORCH_3
         jp .done
 
     .torch_4
-    Copy d, [WRAM_TORCH_4 + SPRITE_X]
-    Copy e, [WRAM_TORCH_4 + SPRITE_Y]
-    FindOverlappingSprite b, c, d, e
+    ;Copy d, [WRAM_TORCH_4 + SPRITE_X]
+    ;Copy e, [WRAM_TORCH_4 + SPRITE_Y]
+    FindOverlappingSprite b, c, SPRITE_X, SPRITE_Y, WRAM_TORCH_4
     jr nz, .done
         ld hl, WRAM_TORCH_4
 

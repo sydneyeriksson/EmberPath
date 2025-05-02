@@ -17,22 +17,27 @@ include "src/graphics.inc"
 def PLAYER_SPRITE       equ _OAMRAM
 def LEFT_DOOR           equ _OAMRAM + sizeof_OAM_ATTRS
 def RIGHT_DOOR          equ _OAMRAM + 2*sizeof_OAM_ATTRS
+
 def TORCH_1             equ _OAMRAM + 3*sizeof_OAM_ATTRS
 def TORCH_2             equ _OAMRAM + 4*sizeof_OAM_ATTRS
 def TORCH_3             equ _OAMRAM + 5*sizeof_OAM_ATTRS
 def TORCH_4             equ _OAMRAM + 6*sizeof_OAM_ATTRS
+
 def WATER_1             equ _OAMRAM + 7*sizeof_OAM_ATTRS
 def WATER_2             equ _OAMRAM + 8*sizeof_OAM_ATTRS
 def WATER_3             equ _OAMRAM + 9*sizeof_OAM_ATTRS
 def WATER_4             equ _OAMRAM + 10*sizeof_OAM_ATTRS
 def WATER_5             equ _OAMRAM + 11*sizeof_OAM_ATTRS
+
 def ONES_TIMER          equ _OAMRAM + 12*sizeof_OAM_ATTRS
 def TENS_TIMER          equ _OAMRAM + 13*sizeof_OAM_ATTRS
+
 def LARGE_SPIKE_1       equ _OAMRAM + 14*sizeof_OAM_ATTRS
 def LARGE_SPIKE_2       equ _OAMRAM + 15*sizeof_OAM_ATTRS
 def SMALL_SPIKE_1       equ _OAMRAM + 16*sizeof_OAM_ATTRS
 def SMALL_SPIKE_2       equ _OAMRAM + 17*sizeof_OAM_ATTRS
 def SMALL_SPIKE_3       equ _OAMRAM + 18*sizeof_OAM_ATTRS
+
 def MINUTE_TIMER        equ _OAMRAM + 19*sizeof_OAM_ATTRS
 def COLON               equ _OAMRAM + 20*sizeof_OAM_ATTRS
 
@@ -64,8 +69,9 @@ def OAMA_NO_FLAGS                equ 0
 ; make macro to check if sprites are colliding 
 ; \1 is  x_coordinate for the first sprite
 ; \2 is  y_coordinate for the first sprite
-; \3 is  x_coordinate for the second sprite
-; \4 is  y_coordinate for the second sprite
+; \3 is what gets added to the x
+; \4 is what gets added to the y
+; \5 is the name of the second sprite
 ; if colliding, set z flag
 macro FindOverlappingSprite
     push bc
@@ -75,21 +81,20 @@ macro FindOverlappingSprite
     DivideBy8
     ld h, a
 
-    ld a, \4
+    ld a, [\5 + \4]
     DivideBy8
 
     cp a, h
     jr nz, .not_overlapping\@
-
     ; find x horizontal col (divide y pixel height by 8)
     ld a, \1
     DivideBy8
     ld c, a
 
-    ld a, \3
+    ld a, [\5 + \3]
     DivideBy8
-    
     cp a, c
+
     .not_overlapping\@
     pop bc
 endm
