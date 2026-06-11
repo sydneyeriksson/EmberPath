@@ -2,7 +2,7 @@
 
 Long ago there lived a king in an beautiful castle in the Swiss Alps. But as he lived on the top of a secluded mountain, the king was very lonely, and decided to build a great fireplace to welcome travelers of all kinds and invite them to stay in his castle. These travelers filled the castle with light and life, playing music, feasting on hot cocoa and cheese, and warming themselves by the fire. But as the years past, the king eventually fell ill and died. The castle now sits, dark and abandoned. But legend says that there remains a single ember from that brilliant blazing fireplace. It flickers determinedly in the castle, keeping the torches lit and lighting the way for any lost spirit or weary traveler who might seek a guiding light...
 
-<img width="917" alt="Screenshot 2025-04-30 at 9 04 27 PM" src="https://github.com/user-attachments/assets/25c337af-757f-48ef-b6da-7cbc72ed8dbc" />
+<img width="917" alt="Screenshot 2025-04-30 at 9 04 27 PM" src="https://github-production-user-asset-6210df.s3.amazonaws.com/123589896/439477308-25c337af-757f-48ef-b6da-7cbc72ed8dbc.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260611%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260611T231132Z&X-Amz-Expires=300&X-Amz-Signature=461c0e190eed82d12069e2d9366859d522b08cdcbb71fdbc9ffc8c12a694e84a&X-Amz-SignedHeaders=host&response-content-type=image%2Fpng" />
 
 ## How to run the game:
 
